@@ -4,7 +4,13 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      {/* Blank screen */}
+      {/* 중앙 텍스트 박스 */}
+      <div className="center-container">  
+        <textarea
+          className="large-input"
+          placeholder="Type your text here..."
+        />
+      </div>
     </div>
   );
 }
