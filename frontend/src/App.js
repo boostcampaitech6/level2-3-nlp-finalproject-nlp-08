@@ -1,5 +1,8 @@
+/* eslint-disable*/
+
 import React from 'react';
 import './App.css';
+import NormalButton from './components/NormalButton';
 
 function App() {
   return (
@@ -16,6 +19,12 @@ function App() {
           placeholder="Type your text here..."
         />
       </div>
+
+      {/* 버튼 */}
+      <div className="mainpage-button-container">
+          <NormalButton label="분석하기" onClick={() => console.log('Button 1 clicked')} />
+          <NormalButton label="전체 삭제" onClick={() => console.log('Button 2 clicked')} />
+        </div>
     </div>
   );
 }
