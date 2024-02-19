@@ -1,10 +1,13 @@
 /* eslint-disable*/
 
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import NormalButton from './components/NormalButton';
+import InputTextBox from './components/InputTextBox';
 
 function App() {
+  const [text, setText] = useState('');
+
   return (
     <div className="App">
       {/* Description text */}
@@ -13,12 +16,7 @@ function App() {
       </div>
 
       {/* 중앙 텍스트 박스 */}
-      <div className="center-container">  
-        <textarea
-          className="large-input"
-          placeholder="Type your text here..."
-        />
-      </div>
+      <InputTextBox value={text} onChange={(e) => setText(e.target.value)} />
 
       {/* 버튼 */}
       <div className="mainpage-button-container">

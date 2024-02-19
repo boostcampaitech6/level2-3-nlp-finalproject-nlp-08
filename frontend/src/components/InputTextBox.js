@@ -1,24 +1,17 @@
-import React, { useState } from 'react';
-import NormalButton from './NormalButton'; // Adjust the import path accordingly
+import React from 'react';
 
-function InputTextBox() {
-  const [textBoxValue, setTextBoxValue] = useState('');
-
-  const handleDeleteAllClick = () => {
-    // Clear the text box by setting its value to an empty string
-    setTextBoxValue('');
-  };
+const InputTextBox = ({ value, onChange }) => {
 
   return (
-    <div>
+    <div className="center-container">
       <textarea
-        value={textBoxValue}
-        onChange={(e) => setTextBoxValue(e.target.value)}
+        className="large-input"
+        placeholder="Type your text here..."
+        value={value}
+        onChange={onChange}
       />
-
-      <NormalButton label="Delete All" onClick={handleDeleteAllClick} />
     </div>
   );
-}
+};
 
 export default InputTextBox;
