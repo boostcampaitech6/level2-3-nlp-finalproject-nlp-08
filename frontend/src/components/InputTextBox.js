@@ -6,7 +6,6 @@ const InputTextBox = ({ value, onChange }) => {
     <div className="center-container">
       <textarea
         className="large-input"
-        placeholder="Type your text here..."
         value={value}
         onChange={onChange}
       />
