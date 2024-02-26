@@ -1,34 +1,18 @@
-/* eslint-disable*/
-
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import NormalButton from './components/NormalButton';
-import InputTextBox from './components/InputTextBox';
+import HomePage from './pages/HomePage';
+import ResultPage from './pages/ResultPage';
 
 function App() {
-  const [text, setText] = useState("");
-
-  const handleSendTextClick = () => {
-    console.log('Send Text Button clicked');
-  };
-
-  const handleDeleteTextClick = () => {
-    setText('');
-  };
-
   return (
     <div className="App">
-      <div className='box-description'>
-        <p>분석하고 싶은 글을 입력해주세요</p>
-      </div>
-
-      <InputTextBox value={text} onChange={(e) => setText(e.target.value)} />
-
-      <div className="mainpage-button-container">
-          <NormalButton label="분석하기" onClick={ handleSendTextClick } />
-          <NormalButton label="전체 삭제" onClick={ handleDeleteTextClick } />
-        </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/result" element={<ResultPage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
