@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import FixedTextBox from '../components/FixedTextBox';
+import NormalButton from '../components/NormalButton';
 
 const ResultPage = () => {
   const location = useLocation();
@@ -12,7 +13,10 @@ const ResultPage = () => {
       <div>
         <FixedTextBox value={text} />
       </div>
-      {/* Add your content here */}
+      
+      <div className='back-button-container'>
+        <NormalButton label="돌아가기" onClick={() => window.history.back()} />
+      </div>
     </div>
   );
 };
