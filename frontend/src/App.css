@@ -10,16 +10,33 @@
   font-family: "나눔고딕";
 }
 
-.center-container {  /* 텍스트 박스의 위치 설정 */
+.center-container {  /* 입력 텍스트 박스의 위치 설정 */
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding-top: 0px;
 }
 
-.large-input {  /* 텍스트 박스 내 설정 */
+.large-input {  /* 입력 텍스트 박스 내 설정 */
   width: 35%;
   height: 350px;
+  font-size: 16px;
+  padding: 10px;
+  resize: none;
+  margin-top: 20px;
+}
+
+.left-container {  /* 본문 텍스트 박스의 위치 설정 */
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-top: 0px;
+  padding-left: 500px;
+}
+
+.large-left-textbox {  /* 본문 텍스트 박스 내 설정 */
+  width: 35%;
+  height: 700px;
   font-size: 16px;
   padding: 10px;
   resize: none;

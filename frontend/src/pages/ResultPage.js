@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import FixedTextBox from '../components/FixedTextBox';
 
 const ResultPage = () => {
   const location = useLocation();
@@ -7,8 +8,10 @@ const ResultPage = () => {
 
   return (
     <div>
-      <h1>Result Page</h1>
-      <p>본문 내용: {text}</p>
+      <h1>문제 풀어보기</h1>
+      <div>
+        <FixedTextBox value={text} />
+      </div>
       {/* Add your content here */}
     </div>
   );
