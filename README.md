@@ -9,7 +9,7 @@ React frontend 설치:
    cd frontend
    npm i
    npm i react-router-dom
-   npm i react-toastify
+   yarn add react-hot-toast
    ```
 
 React 실행:
