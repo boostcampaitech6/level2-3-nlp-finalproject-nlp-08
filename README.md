@@ -7,7 +7,9 @@ React frontend 설치:
 
    ```bash
    cd frontend
-   npm install
+   npm i
+   npm i react-router-dom
+   npm i react-toastify
    ```
 
 React 실행:
