@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NormalButton from '../components/NormalButton';
 import InputTextBox from '../components/InputTextBox';
+import toast, { Toaster } from 'react-hot-toast';
 
 function HomePage() {
   console.log('HomePage component rendered');
@@ -12,7 +13,11 @@ function HomePage() {
   const navigate = useNavigate();
 
   const handleSendTextClick = () => {
-    navigate('/result', { state: { text: text } });
+    if (text.length < 10) {
+        toast.error('10자 이상 입력해주세요.');
+        return;
+    } else {}
+        navigate('/result', { state: { text: text } });
   };
 
   const handleDeleteTextClick = () => {
@@ -30,6 +35,10 @@ function HomePage() {
       <div className="mainpage-button-container">
         <NormalButton label="분석하기" onClick={ handleSendTextClick } />
         <NormalButton label="전체 삭제" onClick={ handleDeleteTextClick } />
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+        />
       </div>
     </div>
   );
