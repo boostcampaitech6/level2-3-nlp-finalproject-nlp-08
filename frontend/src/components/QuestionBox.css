@@ -1,0 +1,17 @@
+.right-container {  /* 본문 텍스트 박스의 위치 설정 */
+    display: flex;
+    align-items: flex-start;
+    padding-top: 0px;
+    padding-left: 30px;
+  }
+  
+  .large-right-textbox {  /* 본문 텍스트 박스 내 설정 */
+    width: 500px;
+    border: none;
+    height: 200px;
+    font-size: 16px;
+    padding: 10px;
+    resize: none;
+    margin-top: 20px;
+    margin-right: 50px;
+  }
