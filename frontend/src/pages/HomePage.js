@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+
 import NormalButton from '../components/NormalButton';
 import InputTextBox from '../components/InputTextBox';
-import toast, { Toaster } from 'react-hot-toast';
 
 function HomePage() {
   console.log('HomePage component rendered');
@@ -39,7 +40,7 @@ function HomePage() {
           position="top-right"
           reverseOrder={false}
         />
-      </div>
+      </div>      
     </div>
   );
 }
