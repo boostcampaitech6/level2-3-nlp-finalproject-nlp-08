@@ -26,23 +26,6 @@
   margin-top: 20px;
 }
 
-.left-container {  /* 본문 텍스트 박스의 위치 설정 */
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding-top: 0px;
-  padding-left: 500px;
-}
-
-.large-left-textbox {  /* 본문 텍스트 박스 내 설정 */
-  width: 35%;
-  height: 700px;
-  font-size: 16px;
-  padding: 10px;
-  resize: none;
-  margin-top: 20px;
-}
-
 .mainpage-button-container {  /* 버튼 위치 설정 */
   display: flex;
   flex-wrap: wrap;
@@ -61,7 +44,7 @@
   display: block;
   position: relative;
   float: left;
-  width: 220px;
+  width: 15%;
   height: 50px;
   padding: 0;
   margin: 30px 30px 0px 30px;
