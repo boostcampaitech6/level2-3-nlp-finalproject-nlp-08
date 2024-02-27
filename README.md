@@ -39,7 +39,7 @@ npm -v
 
 ### React 시작하기
 
-Node.js와 npm을 설치했다면 다음을 실행합니다.
+Node.js와 npm을 설치했다면 다음 커맨드를 실행하여 React를 설치합니다.
 
 ```bash
 cd frontend
