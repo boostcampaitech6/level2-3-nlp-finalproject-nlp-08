@@ -1,0 +1,79 @@
+.App {
+  text-align: center;
+  padding: 20px;
+}
+
+.box-description {  /* 텍스트 박스 위 안내문 */
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  font-family: "나눔고딕";
+}
+
+.center-container {  /* 입력 텍스트 박스의 위치 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 0px;
+}
+
+.large-input {  /* 입력 텍스트 박스 내 설정 */
+  width: 35%;
+  height: 350px;
+  font-size: 16px;
+  padding: 10px;
+  resize: none;
+  margin-top: 20px;
+}
+
+.left-container {  /* 본문 텍스트 박스의 위치 설정 */
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-top: 0px;
+  padding-left: 500px;
+}
+
+.large-left-textbox {  /* 본문 텍스트 박스 내 설정 */
+  width: 35%;
+  height: 700px;
+  font-size: 16px;
+  padding: 10px;
+  resize: none;
+  margin-top: 20px;
+}
+
+.mainpage-button-container {  /* 버튼 위치 설정 */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.back-button-container {  /* 뒤로가기 버튼 위치 설정 */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: right;
+  margin-top: -100px;
+  margin-right: 10px;
+}
+
+.normal-button {  /* 버튼 디자인 */
+  display: block;
+  position: relative;
+  float: left;
+  width: 220px;
+  padding: 0;
+  margin: 30px 30px 0px 30px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 50px;
+  color: #ffffff;
+  background: #00AE68;
+  border-radius: 5px;
+  font-size: 23px;
+  transition: all 0.2s ;
+}
+
+.normal-button:hover {  /* 버튼 호버시 디자인 */
+  background: #21825B;
+}
