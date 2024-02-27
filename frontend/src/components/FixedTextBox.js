@@ -1,4 +1,5 @@
 import React from 'react';
+import './FixedTextBox.css';
 
 const FixedTextBox = ({ value }) => {
 
