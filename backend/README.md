@@ -6,4 +6,5 @@
 
 ## API docs
 localhost:8000/{api url}/docs
+
 localhost:8000/{api url}/redoc
