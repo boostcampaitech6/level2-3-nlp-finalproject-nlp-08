@@ -1,9 +1,15 @@
 from dataclass import DocumentOut, DocumentIn, doc_in_ex, doc_out_ex
 
-def preprocess_input(context):
-    return "preprocess done: " + context 
+from transformers import PreTrainedTokenizerFast
+from transformers import BartForConditionalGeneration
 
-def inference(doc : DocumentIn):
-    c = preprocess_input(doc.context)
-    print("pre process input: ", c)
-    return doc_out_ex
+
+def load_qg_model():
+    print("load model and tokenizer")
+    tokenizer = PreTrainedTokenizerFast.from_pretrained('Sehong/kobart-QuestionGeneration')
+    model = BartForConditionalGeneration.from_pretrained('Sehong/kobart-QuestionGeneration')
+    
+    return tokenizer, model
+    
+
+
