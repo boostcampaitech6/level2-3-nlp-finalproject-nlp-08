@@ -11,7 +11,7 @@ from schemas import doc_in_ex
 qgrouter = APIRouter()
 
 # if model inference takes time, utilize BackgroundTasks + async 
-@qgrouter.post("/generate/")
+@qgrouter.post("/generate")
 async def generate_qa(doc : QuestionGenerationRequest):    
     doc = doc_in_ex # test with sample data, delete before production
     
