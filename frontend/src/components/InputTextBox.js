@@ -1,4 +1,5 @@
 import React from 'react';
+import './InputTextBox.css';
 
 const InputTextBox = ({ value, onChange }) => {
 

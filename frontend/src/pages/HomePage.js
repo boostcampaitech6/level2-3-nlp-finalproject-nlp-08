@@ -6,6 +6,7 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import NormalButton from '../components/NormalButton';
 import InputTextBox from '../components/InputTextBox';
+import './HomePage.css';
 
 function HomePage() {
   console.log('HomePage component rendered');

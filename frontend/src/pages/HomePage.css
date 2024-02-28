@@ -1,0 +1,14 @@
+.box-description {  /* 텍스트 박스 위 안내문 */
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-family: "나눔고딕";
+  }
+  
+  .mainpage-button-container {  /* 버튼 위치 설정 */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  

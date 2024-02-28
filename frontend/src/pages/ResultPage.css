@@ -19,3 +19,11 @@
 .input {
     margin-left: 30px;
 }
+
+.back-button-container {  /* 뒤로가기 버튼 위치 설정 */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: right;
+  margin-top: -100px;
+  margin-right: 10px;
+}
