@@ -16,20 +16,31 @@ parser.add_argument('--dataset', default='lmqg/qg_koquad', help='로컬/허깅�
 parser.add_argument('--localfiletype', help='만약 데이터셋이 로컬파일이라면 이 인수에 확장자를 적어주세요')
 args = parser.parse_args()
 
-# 허깅페이스에서 데이터셋 가져오기
-dataset = load_dataset(args.dataset)
 
-# 로컬에서 데이터셋 가져오기
+
+# 로컬에서 데이터셋 가져오기 
 if(args.localfiletype is not None):
     dataset = load_dataset(args.localfiletype, data_file=args.dataset)
+# 허깅페이스에서 데이터셋 가져오기
+else:
+    dataset = load_dataset(args.dataset)
+
+# 현재로서는 로컬은 csv 파일 타입만 상정하고 있음. 그 외의 타입에는 train, valid 같은 subset이 들어갈지 어떨지.
+assert(args.localfiletype is None or args.localfiletype =='csv')
 
 # 데이터셋의 크기
-print(f'{args.subset}에 들어있는 데이터의 갯수는', len(dataset[args.subset]))
-# print('validation에 들어있는 데이터의 갯수는', len(dataset['validation']))
-# print('test에 들어있는 데이터의 갯수는', len(dataset['test']))
+if(args.localfiletype == 'csv'):
+    print(f'{args.dataset}에 들어있는 데이터의 갯수는', len(dataset))
+else:
+    print(f'{args.subset}에 들어있는 데이터의 갯수는', len(dataset[args.subset]))
+    # print('validation에 들어있는 데이터의 갯수는', len(dataset['validation']))
+    # print('test에 들어있는 데이터의 갯수는', len(dataset['test']))
 
 #판다스 데이터프레임으로 변환
-train_data = dataset[args.subset].to_pandas()
+if(args.localfiletype == 'csv'):
+    train_data = dataset.to_pandas()
+else:
+    train_data = dataset[args.subset].to_pandas()
 
 # csv 파일로 추출
 if(args.csvout is not None):
