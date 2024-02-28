@@ -18,6 +18,9 @@ args = parser.parse_args()
 # 허깅페이스에서 데이터셋 가져오기
 dataset = load_dataset(args.dataset)
 
+# 로컬에서 데이터셋 가져오기
+# dataset = load_dataset('csv', data_file=args.dataset)
+
 # 데이터셋의 크기
 print(f'{args.subset}에 들어있는 데이터의 갯수는', len(dataset[args.subset]))
 # print('validation에 들어있는 데이터의 갯수는', len(dataset['validation']))
