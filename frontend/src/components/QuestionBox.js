@@ -5,9 +5,7 @@ const QuestionBox = ({ value }) => {
 
   return (
     <div className="right-container">
-      <p>
-        {value}
-      </p>
+      <textarea className="large-right-textbox" disabled={true} value={value} readOnly/>
     </div> 
   );
 };

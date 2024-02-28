@@ -7,6 +7,7 @@ const FixedTextBox = ({ value }) => {
     <div className="left-container">
       <textarea
         className="large-left-textbox"
+        disabled={true}
         value={value}
       />
     </div>

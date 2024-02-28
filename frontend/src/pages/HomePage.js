@@ -1,8 +1,7 @@
-// HomePage.js
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
 
 import NormalButton from '../components/NormalButton';
 import InputTextBox from '../components/InputTextBox';
@@ -18,8 +17,19 @@ function HomePage() {
     if (text.length < 10) {
         toast.error('10자 이상 입력해주세요.');
         return;
-    } else {}
-        navigate('/result', { state: { text: text } });
+    }
+
+    axios.post('http://localhost:8000/posts', { 
+      text 
+    })
+    .then((response) => {
+      console.log(response);
+      navigate('/result', { state: { text: text, postId: response.data.id } });
+    })
+    .catch((error) => {
+      console.log(error);
+      toast.error('글 전송에 실패했습니다.');
+    });
   };
 
   const handleDeleteTextClick = () => {
