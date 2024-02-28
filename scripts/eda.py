@@ -19,7 +19,7 @@ args = parser.parse_args()
 dataset = load_dataset(args.dataset)
 
 # 데이터셋의 크기
-print('train에 들어있는 데이터의 갯수는', len(dataset[args.subset]))
+print(f'{args.subset}에 들어있는 데이터의 갯수는', len(dataset[args.subset]))
 # print('validation에 들어있는 데이터의 갯수는', len(dataset['validation']))
 # print('test에 들어있는 데이터의 갯수는', len(dataset['test']))
 
