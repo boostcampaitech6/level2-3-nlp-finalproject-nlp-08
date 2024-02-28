@@ -8,8 +8,6 @@ import InputTextBox from '../components/InputTextBox';
 import './HomePage.css';
 
 function HomePage() {
-  console.log('HomePage component rendered');
-
   const [text, setText] = useState("");
   const navigate = useNavigate();
 
@@ -19,7 +17,7 @@ function HomePage() {
         return;
     }
 
-    axios.post('http://localhost:8000/posts', { 
+    axios.post('http://localhost:8000/text', { 
       text 
     })
     .then((response) => {

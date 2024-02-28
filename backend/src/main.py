@@ -1,9 +1,10 @@
 from fastapi import FastAPI, APIRouter
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from contextlib import asynccontextmanager
 
 from model import load_qg_model
-from dataclass import DocumentOut, DocumentIn, doc_in_ex, doc_out_ex
+from dataclass import DocumentOut, DocumentIn, doc_in_ex, doc_out_ex, DocumentInRequest
 
 import torch
 
@@ -22,8 +23,20 @@ async def lifespan(app: FastAPI):
     print("shutdown event")
     ml_models.clear()
 
+origins = [
+    "http://localhost:3000",
+    "localhost:3000",
+]
 
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # define routers ex)
 # user_router = APIRouter(prefix='/users')
@@ -57,7 +70,22 @@ async def generate_qa(doc : DocumentIn):
         ]
     }
     result_doc = DocumentOut(**result)
-    return result_doc                      
+    return result_doc
+
+
+@app.post("/text", tags=["text", "id"])
+async def post_text(text: dict) -> dict:
+    text = text['text']
+    return {
+        "text": text
+    }
+    
+@app.get("/text", tags=["question", "answer"])
+async def get_text() -> dict:
+    return {
+        "question": "임종석이 지명수배된 날짜는?",
+        "answer": "1989년 2월 15일"
+    }
 
 
 @app.get("/")

@@ -31,3 +31,7 @@ DOCOUT_EX = {
     ]
 }
 doc_out_ex = DocumentOut(**DOCOUT_EX)
+
+class DocumentInRequest(BaseModel):
+    id: int
+    text: str

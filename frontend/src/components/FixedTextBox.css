@@ -1,6 +1,7 @@
 .left-container {  /* 본문 텍스트 박스의 위치 설정 */
     display: flex;
     align-items: flex-start;
+    width: 100;
     padding-top: 0px;
     padding-left: 15%;
   }

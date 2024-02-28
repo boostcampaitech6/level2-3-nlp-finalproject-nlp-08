@@ -1,0 +1,6 @@
+.result-message-container {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 2%;
+    padding-left: 3%;
+}
