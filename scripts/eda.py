@@ -12,14 +12,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--csvout', help='추출할 csv 파일 이름')
 parser.add_argument('--subset', default='train', help='train, test, 혹은 valid ')
 parser.add_argument('--column', default='paragraph', help='분석할 칼럼의 이름')
-parser.add_argument('--dataset', default='lmqg/qg_koquad', help='허깅페이스에서 가져올 데이터셋 이름')
+parser.add_argument('--dataset', default='lmqg/qg_koquad', help='로컬/허깅페이스에서 가져올 데이터셋 이름')
+parser.add_argument('--localfiletype', help='만약 데이터셋이 로컬파일이라면 이 인수에 확장자를 적어주세요')
 args = parser.parse_args()
 
 # 허깅페이스에서 데이터셋 가져오기
 dataset = load_dataset(args.dataset)
 
 # 로컬에서 데이터셋 가져오기
-# dataset = load_dataset('csv', data_file=args.dataset)
+if(args.localfiletype is not None):
+    dataset = load_dataset(args.localfiletype, data_file=args.dataset)
 
 # 데이터셋의 크기
 print(f'{args.subset}에 들어있는 데이터의 갯수는', len(dataset[args.subset]))
