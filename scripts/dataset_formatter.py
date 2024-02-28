@@ -12,9 +12,10 @@ args = parser.parse_args()
 # 허깅페이스에서 데이터셋 가져오기
 dataset = load_dataset(args.dataset)
 
-#판다스 데이터프레임으로 변환
+# 판다스 데이터프레임으로 변환
 train_data = dataset[args.subset].to_pandas()
 
+# 지문 칼럼의 이름을 context로 변경
 train_data = train_data.rename(columns={args.column: 'context'})
 
 # csv 파일로 추출
