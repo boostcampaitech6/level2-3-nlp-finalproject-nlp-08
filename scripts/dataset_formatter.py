@@ -29,11 +29,15 @@ col_name_dict = { args.answer : 'answer', args.question:'question', args.context
                   args.answer_type:'answer_type', args.answer_start:'answer_start',
                   args.clue_start:'clue_start', args.clue_end:'clue_end' }
 for key, val in col_name_dict.items():
+    # key 칼럼이 존재하면 이름을 val로 바꿈
     if key in train_data.columns:
         train_data = train_data.rename(columns={key: val})
+    # key 칼럼이 존재하지 않으면 새 val 칼럼을 만듬
     else:
         train_data[val] = None
 
 # csv 파일로 추출
 if(args.csvout is not None):
     train_data.to_csv(f'./{args.csvout}.csv')
+else:
+    print("출력할 csv 파일 이름을 넣어주지 않아서 아무것도 출력되지 않습니다")
