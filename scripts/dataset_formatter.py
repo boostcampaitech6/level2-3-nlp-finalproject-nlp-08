@@ -24,15 +24,15 @@ dataset = load_dataset(args.dataset)
 train_data = dataset[args.subset].to_pandas()
 
 # 칼럼들의 이름을 변경
-train_data = train_data.rename(columns={args.answer: 'answer'})
-train_data = train_data.rename(columns={args.question: 'question'})
-train_data = train_data.rename(columns={args.context: 'context'})
-train_data = train_data.rename(columns={args.question_level: 'question_level'})
-train_data = train_data.rename(columns={args.question_type: 'question_type'})
-train_data = train_data.rename(columns={args.answer_type: 'answer_type'})
-train_data = train_data.rename(columns={args.answer_start: 'answer_start'})
-train_data = train_data.rename(columns={args.clue_start: 'clue_start'})
-train_data = train_data.rename(columns={args.clue_end: 'clue_end'})
+col_name_dict = { args.answer : 'answer', args.question:'question', args.context:'context',
+                  args.question_level:'question_level', args.question_type:'question_type',
+                  args.answer_type:'answer_type', args.answer_start:'answer_start',
+                  args.clue_start:'clue_start', args.clue_end:'clue_end' }
+for key, val in col_name_dict.items():
+    if key in train_data.columns:
+        train_data = train_data.rename(columns={key: val})
+    else:
+        train_data[val] = None
 
 # csv 파일로 추출
 if(args.csvout is not None):
