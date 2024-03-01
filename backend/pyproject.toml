@@ -11,6 +11,7 @@ fastapi = "^0.110.0"
 uvicorn = "^0.27.1"
 torch = "^2.2.1"
 transformers = "^4.38.1"
+loguru = "^0.7.2"
 
 
 [build-system]
