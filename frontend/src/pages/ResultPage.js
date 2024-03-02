@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import axios from 'axios';
 import FixedTextBox from '../components/FixedTextBox';
 import NormalButton from '../components/NormalButton';
 import QuestionBox from '../components/QuestionBox';
@@ -10,23 +9,16 @@ import './ResultPage.css';
 
 const ResultPage = () => {
   const location = useLocation();
+  console.log("Location state:", location.state);
   const text = location.state.text;
-  const [question, setQuestion] = useState("");
+  const question = location.state.question;
+  const correctAnswer = location.state.answer;
+  console.log("Text:", text);
+  console.log("Question:", question);
+  console.log("Correct Answer:", correctAnswer);
   const [userAnswer, setUserAnswer] = useState("");
-  const [correctAnswer, setCorrectAnswer] = useState("");
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
-
-  useEffect(() => {
-    axios.get('http://localhost:8000/text')
-      .then(response => {
-        setQuestion(response.data.question);
-        setCorrectAnswer(response.data.answer);
-      })
-      .catch(error => {
-        console.error('Error fetching question:', error);
-      });
-  }, []);
 
   const handleCheckAnswer = () => {
     setIsAnswerCorrect(userAnswer === correctAnswer);

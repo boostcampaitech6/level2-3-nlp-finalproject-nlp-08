@@ -13,7 +13,7 @@ qgrouter = APIRouter()
 # if model inference takes time, utilize BackgroundTasks + async 
 @qgrouter.post("/generate")
 async def generate_qa(doc : QuestionGenerationRequest):    
-    doc = doc_in_ex # test with sample data, delete before production
+    # doc = doc_in_ex # test with sample data, delete before production
     
     response_dict = {
         "question_answer_pairs": []
@@ -25,7 +25,6 @@ async def generate_qa(doc : QuestionGenerationRequest):
     logger.debug(f"num to generate={len(answers_list)}")
 
     for answer in answers_list:
-        print('hihih')
         generated_question = generate_question(context=context, answer=answer)
         response_dict['question_answer_pairs'].append({
             "question": generated_question, 

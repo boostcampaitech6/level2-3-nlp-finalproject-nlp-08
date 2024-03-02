@@ -10,22 +10,40 @@ import './HomePage.css';
 function HomePage() {
   const [text, setText] = useState("");
   const navigate = useNavigate();
+  const sample_answers = ["2013년 9월"]
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/generate';
+  const MIN_TEXT_LENGTH = 10;
+
 
   const handleSendTextClick = () => {
-    if (text.length < 10) {
+    if (text.length < MIN_TEXT_LENGTH) {
         toast.error('10자 이상 입력해주세요.');
         return;
     }
 
-    axios.post('http://localhost:8000/text', { 
-      text 
+    axios.post(API_URL, { 
+      context: text,
+      answers: sample_answers
     })
     .then((response) => {
-      console.log(response);
-      navigate('/result', { state: { text: text, postId: response.data.id } });
+      const result_doc  = response.data;
+      const questionAnswerPairs = result_doc.question_answer_pairs;
+
+      console.log(result_doc);
+      let firstQuestion, firstAnswer
+
+      if (questionAnswerPairs.length > 0) {
+        const firstQuestionAnswerPair = questionAnswerPairs[0];
+        
+        firstQuestion = firstQuestionAnswerPair["question"];
+        firstAnswer = firstQuestionAnswerPair["answer"];
+        console.log(`First Key: ${firstQuestion}, First Value: ${firstAnswer}`);
+      }
+      
+      navigate('/result', { state: { text: text, question: firstQuestion, answer: firstAnswer } });
     })
     .catch((error) => {
-      console.log(error);
+      console.log('API 요청 실패:', error);
       toast.error('글 전송에 실패했습니다.');
     });
   };
