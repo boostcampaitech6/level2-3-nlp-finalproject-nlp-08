@@ -5,7 +5,11 @@
     font-family: "나눔고딕";
   }
   
-  .mainpage-button-container {  /* 버튼 위치 설정 */
+.mainpage-textbox-container {
+  height: 100%;
+}
+
+.mainpage-button-container {  /* 버튼 위치 설정 */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

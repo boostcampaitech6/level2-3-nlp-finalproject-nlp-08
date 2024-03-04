@@ -54,20 +54,18 @@ function HomePage() {
 
   return (
     <div className="App">
-      <div className='box-description'>
-        <p>분석하고 싶은 글을 입력해주세요</p>
+      <div className='mainpage-textbox-container'>
+        <InputTextBox value={text} onChange={(e) => setText(e.target.value)} />
       </div>
-
-      <InputTextBox value={text} onChange={(e) => setText(e.target.value)} />
-
       <div className="mainpage-button-container">
         <NormalButton label="분석하기" onClick={ handleSendTextClick } />
         <NormalButton label="전체 삭제" onClick={ handleDeleteTextClick } />
-        <Toaster
-          position="top-right"
-          reverseOrder={false}
-        />
-      </div>      
+      </div>
+      
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />      
     </div>
   );
 }

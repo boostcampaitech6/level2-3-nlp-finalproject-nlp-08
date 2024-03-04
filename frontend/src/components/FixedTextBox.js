@@ -4,9 +4,9 @@ import './FixedTextBox.css';
 const FixedTextBox = ({ value }) => {
 
   return (
-    <div className="left-container">
+    <div className="result-container">
       <textarea
-        className="large-left-textbox"
+        className="large-result-textbox"
         disabled={true}
         value={value}
       />

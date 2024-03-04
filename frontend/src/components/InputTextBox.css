@@ -6,8 +6,8 @@
   }
   
   .large-input {  /* 입력 텍스트 박스 내 설정 */
-    width: 35%;
-    height: 350px;
+    width: 70%;
+    height: calc(100vh - 220px);
     font-size: 16px;
     padding: 10px;
     resize: none;

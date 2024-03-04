@@ -1,13 +1,13 @@
-.left-container {  /* 본문 텍스트 박스의 위치 설정 */
+.result-container {  /* 본문 텍스트 박스의 위치 설정 */
     display: flex;
     align-items: flex-start;
-    width: 100;
+    justify-content: center;
+    width: 100vw;
     padding-top: 0px;
-    padding-left: 15%;
   }
   
-  .large-left-textbox {  /* 본문 텍스트 박스 내 설정 */
-    width: 400px;
+  .large-result-textbox {  /* 본문 텍스트 박스 내 설정 */
+    width: calc(100vw - 400px);
     height: 500px;
     font-size: 16px;
     padding: 10px;

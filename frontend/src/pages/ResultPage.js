@@ -27,28 +27,12 @@ const ResultPage = () => {
 
   return (
     <div>
-      <h1>문제 풀어보기</h1>
       <div className='result-area' >
-        <FixedTextBox value={text} />
-        <div className='answer-input'>
-          <QuestionBox value={question} />
-          <input
-            className='input'
-            type='text'
-            placeholder='답을 입력하세요.'
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-          />
-          {buttonClicked && (
-            <CheckAnswerBox isAnswerCorrect={isAnswerCorrect} correctAnswer={correctAnswer} />
-          )}
-        </div>
-        
+        <FixedTextBox value={text} />    
       </div>
-      
-      <div className='back-button-container'>
-        <NormalButton label="채점하기" onClick={handleCheckAnswer}/>
-        <NormalButton label="돌아가기" onClick={() => window.history.back()} />
+
+      <div className='question-area'>
+        <QuestionBox value={question} />
       </div>
     </div>
   );

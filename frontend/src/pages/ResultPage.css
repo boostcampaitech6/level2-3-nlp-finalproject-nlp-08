@@ -2,8 +2,6 @@
     display: flex;
     justify-content: flex-start;
     margin-bottom: auto;
-    width: 100%;
-    height: 100%;
 }
 
 .answer-input {
@@ -26,4 +24,10 @@
   justify-content: right;
   margin-top: -100px;
   margin-right: 10px;
+}
+
+.question-area {
+    display: flex;
+    justify-content: center;
+
 }
