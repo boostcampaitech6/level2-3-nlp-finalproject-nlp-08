@@ -5,41 +5,15 @@ from datasets import load_dataset
 
 from transformers import AutoTokenizer
 
-
-import pandas as pd
-from tqdm import tqdm
-
-def dict2df(dataset):
-    dataset = pd.DataFrame(dataset)
-    train_data = pd.DataFrame(columns=['id', 'context', 'question', 'answer', 'answer_start', 'answer_type', 'classtype', 'clue_text', 'clue_start', 'clue_end'])
-
-    for i in tqdm(range(len(dataset))):
-        data = dataset.iloc[i]
-        id = data['id']
-        context = data['context']
-        question = data['question']
-        answer = data['answers']['text'][0]
-        answer_start = data['answers']['answer_start'][0]
-        answer_type = None
-        classtype = None
-        clue_text = None
-        clue_start = None
-        clue_end = None
-        train_data.loc[i] = [id, context, question, answer, answer_start, answer_type, classtype, clue_text, clue_start, clue_end]
-    
-    return train_data
-
 class QGDataset(torch.utils.data.Dataset):
-    def __init__(self, dataset_name, tokenizer_name, input_max_len, train=True, ignore_index=-100):
+    def __init__(self, dataset_name, tokenizer_name, input_max_len, train=True, token=None, ignore_index=-100):
         
-        # temporary dataset loading fuction
-        # replace it after building dataset
+        self.dataset = load_dataset(dataset_name, token=token)  
+        # temporary setting only 10 sample using!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if train == True:
-            self.dataset = load_dataset(dataset_name)['train'][:10]        
+            self.dataset = self.dataset['train'].to_pandas()[:10] 
         else:
-            self.dataset = load_dataset(dataset_name)['validation'][:10]    
-
-        self.dataset = dict2df(self.dataset)
+            self.dataset = self.dataset['test'].to_pandas()[:10] 
 
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
         
@@ -59,7 +33,6 @@ class QGDataset(torch.utils.data.Dataset):
 
         return inputs
     
-    # what is your 정체?
     def add_ignored_data(self, inputs):
         if len(inputs) < self.input_max_len:
             pad = np.array([self.ignore_index] * (self.input_max_len - len(inputs)))
@@ -71,7 +44,7 @@ class QGDataset(torch.utils.data.Dataset):
     
     def __getitem__(self, idx):
         instance = self.dataset.iloc[idx]
-        input_ids = self.tokenizer.encode(instance['context'])
+        input_ids = self.tokenizer.encode(instance['context'] + '<unused0>' + instance['answer'])
         input_ids = self.add_padding_data(input_ids)
 
         label_ids = self.tokenizer.encode(instance['question'])

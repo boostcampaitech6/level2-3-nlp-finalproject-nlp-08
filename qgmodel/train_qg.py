@@ -7,10 +7,11 @@ from transformers import set_seed, BartForConditionalGeneration, TrainingArgumen
 from dataset.QGDataset import QGDataset
 
 MODEL_NAME = "Sehong/kobart-QuestionGeneration"
-TRAIN_DATASET_NAME = "squad_kor_v1"
-VALID_DATASET_NAME = "squad_kor_v1"
+TRAIN_DATASET_NAME = "2024-level3-finalproject-nlp-8/squad_kor_v1_train_reformatted"
+VALID_DATASET_NAME = "2024-level3-finalproject-nlp-8/squad_kor_v1_test_reformatted"
 INPUT_MAX_LEN = 512
 BATCH_SIZE = 2
+HF_ACCESS_TOKEN = "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"
 
 def train():
     set_seed(8)
@@ -25,20 +26,16 @@ def train():
                         dataset_name = TRAIN_DATASET_NAME, 
                         tokenizer_name = MODEL_NAME,
                         input_max_len = INPUT_MAX_LEN,
-                        train=True, 
+                        train=True,
+                        token = HF_ACCESS_TOKEN,
                     )    
     valid_dataset = QGDataset(
                         dataset_name = VALID_DATASET_NAME, 
                         tokenizer_name = MODEL_NAME,
                         input_max_len = INPUT_MAX_LEN,
-                        train=False
+                        train=False,
+                        token = HF_ACCESS_TOKEN,
                     )
-
-    logger.info(f"load train dataloader")
-    logger.info(f"load test dataloader")
-    train_dataloader = DataLoader(train_dataset, BATCH_SIZE)
-    valid_dataloader = DataLoader(valid_dataset, BATCH_SIZE)
-    
     
     qg_model = BartForConditionalGeneration.from_pretrained(MODEL_NAME)
     qg_model.to(device)
