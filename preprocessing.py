@@ -1,11 +1,11 @@
 import pandas as pd
-
+from tqdm import tqdm
 
 def preprocessing_dataset(dataset):
-    
+    dataset = pd.DataFrame(dataset)
     train_data = pd.DataFrame(columns=['id', 'context', 'question', 'answer', 'answer_start', 'answer_type', 'classtype', 'clue_text', 'clue_start', 'clue_end'])
 
-    for i in range(len(dataset)):
+    for i in tqdm(range(len(dataset))):
         data = dataset.iloc[i]
         id = data['id']
         context = data['context']
