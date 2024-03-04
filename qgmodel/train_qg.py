@@ -1,14 +1,15 @@
 import torch
-from torch.utils.data import DataLoader
 from loguru import logger
 
-from transformers import set_seed, BartForConditionalGeneration, TrainingArguments, Trainer
+from transformers import set_seed, BartForConditionalGeneration, TrainingArguments, Trainer, T5ForConditionalGeneration
 
 from dataset.QGDataset import QGDataset
 
-MODEL_NAME = "Sehong/kobart-QuestionGeneration"
+# MODEL_NAME = "Sehong/kobart-QuestionGeneration"
+MODEL_NAME = "Sehong/t5-large-QuestionGeneration"
 TRAIN_DATASET_NAME = "2024-level3-finalproject-nlp-8/squad_kor_v1_train_reformatted"
 VALID_DATASET_NAME = "2024-level3-finalproject-nlp-8/squad_kor_v1_test_reformatted"
+MODEL_TYPE = "pipe-line"  # ['pipe-line', 'e2e']
 INPUT_MAX_LEN = 512
 BATCH_SIZE = 2
 HF_ACCESS_TOKEN = "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"
@@ -27,6 +28,7 @@ def train():
                         tokenizer_name = MODEL_NAME,
                         input_max_len = INPUT_MAX_LEN,
                         train=True,
+                        model_type=MODEL_TYPE, 
                         token = HF_ACCESS_TOKEN,
                     )    
     valid_dataset = QGDataset(
@@ -34,10 +36,16 @@ def train():
                         tokenizer_name = MODEL_NAME,
                         input_max_len = INPUT_MAX_LEN,
                         train=False,
+                        model_type=MODEL_TYPE,
                         token = HF_ACCESS_TOKEN,
                     )
     
-    qg_model = BartForConditionalGeneration.from_pretrained(MODEL_NAME)
+    if MODEL_TYPE == "pipe-line":
+        qg_model = BartForConditionalGeneration.from_pretrained(MODEL_NAME)
+    else:
+        qg_model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
+    
+
     qg_model.to(device)
     logger.info(f"load question generation model {MODEL_NAME}")
     logger.info(f"model information: {qg_model}")
