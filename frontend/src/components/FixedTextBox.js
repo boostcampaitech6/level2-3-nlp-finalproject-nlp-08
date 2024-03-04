@@ -1,4 +1,5 @@
 import React from 'react';
+import './FixedTextBox.css';
 
 const FixedTextBox = ({ value }) => {
 
@@ -6,6 +7,7 @@ const FixedTextBox = ({ value }) => {
     <div className="left-container">
       <textarea
         className="large-left-textbox"
+        disabled={true}
         value={value}
       />
     </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import './NormalButton.css';
 
 function NormalButton({ label, onClick }) {
   return (

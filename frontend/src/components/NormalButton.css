@@ -1,0 +1,21 @@
+.normal-button {  /* 버튼 디자인 */
+    display: block;
+    position: relative;
+    float: left;
+    width: 15%;
+    height: 50px;
+    padding: 0;
+    margin: 30px 30px 0px 30px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 50px;
+    color: #ffffff;
+    background: #00AE68;
+    border-radius: 5px;
+    font-size: 23px;
+    transition: all 0.2s ;
+  }
+
+  .normal-button:hover {  /* 버튼 호버시 디자인 */
+    background: #21825B;
+}
