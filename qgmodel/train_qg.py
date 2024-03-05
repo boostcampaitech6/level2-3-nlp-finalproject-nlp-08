@@ -1,7 +1,13 @@
 import torch
 from loguru import logger
 
-from transformers import set_seed, BartForConditionalGeneration, TrainingArguments, Trainer, T5ForConditionalGeneration
+from transformers import (
+    set_seed, 
+    Trainer,
+    BartForConditionalGeneration, 
+    TrainingArguments,  
+    T5ForConditionalGeneration
+)
 
 from dataset.QGDataset import QGDataset
 
@@ -13,13 +19,13 @@ MODEL_TYPE = "T5"  # ['T5', 'BART']
 INPUT_MAX_LEN = 512
 BATCH_SIZE = 2
 HF_ACCESS_TOKEN = "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"
+SEED = 8
 
 def train():
-    set_seed(8)
+    set_seed(SEED)
     
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     logger.info(f"start training {MODEL_NAME} on {device}")
-    
 
     logger.info(f"load train data : {TRAIN_DATASET_NAME}")
     logger.info(f"load test data : {VALID_DATASET_NAME}")
