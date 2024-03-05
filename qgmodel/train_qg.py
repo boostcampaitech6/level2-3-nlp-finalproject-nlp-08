@@ -9,7 +9,7 @@ from dataset.QGDataset import QGDataset
 MODEL_NAME = "Sehong/t5-large-QuestionGeneration"
 TRAIN_DATASET_NAME = "2024-level3-finalproject-nlp-8/squad_kor_v1_train_reformatted"
 VALID_DATASET_NAME = "2024-level3-finalproject-nlp-8/squad_kor_v1_test_reformatted"
-MODEL_TYPE = "pipe-line"  # ['pipe-line', 'e2e']
+MODEL_TYPE = "T5"  # ['T5', 'BART']
 INPUT_MAX_LEN = 512
 BATCH_SIZE = 2
 HF_ACCESS_TOKEN = "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"
@@ -40,9 +40,9 @@ def train():
                         token = HF_ACCESS_TOKEN,
                     )
     
-    if MODEL_TYPE == "pipe-line":
+    if MODEL_TYPE == "BART":
         qg_model = BartForConditionalGeneration.from_pretrained(MODEL_NAME)
-    else:
+    elif MODEL_TYPE == "T5":
         qg_model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
     
 
@@ -55,7 +55,7 @@ def train():
         output_dir=f'./trained_qg_models/{MODEL_NAME}',   # output directory
         save_total_limit=2,              # number of total save model.
         save_steps=2,                 # model saving step.
-        num_train_epochs=10,              # total number of training epochs
+        num_train_epochs=4,              # total number of training epochs
         learning_rate=2e-5,               # learning_rate
         per_device_train_batch_size=BATCH_SIZE,  # batch size per device during training
         per_device_eval_batch_size=BATCH_SIZE,   # batch size for evaluation

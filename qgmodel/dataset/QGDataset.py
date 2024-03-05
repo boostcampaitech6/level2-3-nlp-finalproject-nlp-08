@@ -16,6 +16,7 @@ class QGDataset(torch.utils.data.Dataset):
             self.dataset = self.dataset['test'].to_pandas()[:10] 
 
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+        self.tokenizer.sep_token = '<unused0>'
         
         self.input_max_len = input_max_len
         self.pad_index = self.tokenizer.pad_token_id
@@ -45,55 +46,45 @@ class QGDataset(torch.utils.data.Dataset):
     
     def __getitem__(self, idx):
         instance = self.dataset.iloc[idx]
-        if self.model_type == 'pipe-line':
-            input_text = instance['context'] + '<unused0>' + instance['answer']
-            label_text = instance['question']
-        
-            input_ids = self.tokenizer.encode(input_text)
-            input_ids = self.add_padding_data(input_ids)
 
-            label_ids = self.tokenizer.encode(label_text)
+        if self.model_type == 'BART':
+            tokenized_input = self.tokenizer(instance['context'] + self.tokenizer.sep_token + instance['answer'], 
+                                             max_length=self.input_max_len, 
+                                             padding="max_length")
+            input_ids = tokenized_input['input_ids']
+            attention_mask = tokenized_input['attention_mask']
+
+            label_ids = self.tokenizer.encode(instance['question'])
             label_ids.append(self.tokenizer.eos_token_id)
             dec_input_ids = [self.tokenizer.eos_token_id]
             dec_input_ids += label_ids[:-1]
             dec_input_ids = self.add_padding_data(dec_input_ids)
             label_ids = self.add_ignored_data(label_ids)
 
-            return {'input_ids': torch.tensor(input_ids, dtype=torch.long),
-                    'decoder_input_ids': torch.tensor(dec_input_ids, dtype=torch.long),
-                    'labels': torch.tensor(label_ids, dtype=torch.long)}
+            decoder_attention_mask = (dec_input_ids != self.pad_index)
 
-        elif self.model_type == 'e2e':
-            instance = self.docs.iloc[idx]
-            content = instance['content']
-            question = instance['question'].strip()
+        elif self.model_type == 'T5':
+            tokenized_input = self.tokenizer('answer:' + instance['answer'] + 'content:' + instance['context'], 
+                                             max_length=self.input_max_len, 
+                                             padding="max_length")
+            input_ids = tokenized_input['input_ids']
+            attention_mask = tokenized_input['attention_mask']
 
-            sep_index = content.find('[SEP]')
-
-            answer = content[sep_index + 6::].strip()
-            content = content[:sep_index].strip()
-
-            prefix_content_token_id = self.tokenizer.encode('content:', add_special_tokens=False)
-            prefix_answer_token_id = self.tokenizer.encode('answer:', add_special_tokens=False)
-            prefix_question_token_id = self.tokenizer.encode('question:', add_special_tokens=False)
-
-            input_ids = prefix_answer_token_id
-            input_ids += self.tokenizer.encode(answer, add_special_tokens=False)
-            input_ids += prefix_content_token_id
-            input_ids += self.tokenizer.encode(content, add_special_tokens=False)
-            input_ids = self.add_padding_data(input_ids)
-
-            label_ids = prefix_question_token_id
-            label_ids += self.tokenizer.encode(question, add_special_tokens=False)
+            label_ids = self.tokenizer.encode('question:' + instance['question'], add_special_tokens=False)
             label_ids.append(self.tokenizer.eos_token_id)
             dec_input_ids = [self.tokenizer.eos_token_id]
             dec_input_ids += label_ids[:-1]
             dec_input_ids = self.add_padding_data(dec_input_ids)
             label_ids = self.add_ignored_data(label_ids)
 
-            return {'input_ids': torch.tensor(input_ids, dtype=torch.long),
-                    'decoder_input_ids': torch.tensor(dec_input_ids, dtype=torch.long),
-                    'labels': torch.tensor(label_ids, dtype=torch.long)}
+            decoder_attention_mask = (dec_input_ids != self.pad_index)
+
+            
+        return {'input_ids': torch.tensor(input_ids, dtype=torch.long),
+                'decoder_input_ids': torch.tensor(dec_input_ids, dtype=torch.long),
+                'labels': torch.tensor(label_ids, dtype=torch.long),
+                'attention_mask': torch.tensor(attention_mask, dtype=torch.long),
+                'decoder_attention_mask': torch.tensor(decoder_attention_mask, dtype=torch.long)}
 
     def __len__(self):
         return self.len
