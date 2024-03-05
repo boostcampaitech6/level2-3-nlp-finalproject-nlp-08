@@ -7,6 +7,7 @@ import torch
 from transformers import (
     set_seed,
     BartForConditionalGeneration,
+    T5ForConditionalGeneration,
     PreTrainedTokenizerFast,
     AutoTokenizer
 )
@@ -111,7 +112,10 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # load model
-    model = BartForConditionalGeneration.from_pretrained(MODEL_NAME)
+    if MODEL_TYPE == "BART":
+        model = BartForConditionalGeneration.from_pretrained(MODEL_NAME)
+    elif MODEL_TYPE == "T5":
+        qg_model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
     model.to(device)
 
     # load tokenizer
