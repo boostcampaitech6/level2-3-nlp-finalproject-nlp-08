@@ -59,7 +59,7 @@ if __name__ == '__main__':
     # generate question
     generated_questions = inference(model, dataset, tokenizer)
 
-    output_path = "./output.csv"
+    output_path = "../output.csv"
     output = pd.DataFrame({'question': generated_questions})
     output.to_csv(output_path, index=False)
     
