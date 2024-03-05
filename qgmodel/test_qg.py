@@ -1,3 +1,4 @@
+from loguru import logger
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from rouge import Rouge
 import numpy as np
@@ -76,13 +77,14 @@ def evaluate(reference, candidate):
         rouge2_list[i] = result['rouge-2']
         rougeL_list[i] = result['rouge-l']
 
-    print('bleu1: ', np.mean(bleu1_list))
-    print('bleu2: ', np.mean(bleu2_list))
-    print('bleu3: ', np.mean(bleu3_list))
-    print('bleu4: ', np.mean(bleu4_list))
-    print('ROUGE-1: ', np.mean(rouge1_list))
-    print('ROUGE-2: ', np.mean(rouge2_list))
-    print('ROUGE-L: ', np.mean(rougeL_list))
+
+    logger.info(f'bleu1: {np.mean(bleu1_list)}')
+    logger.info(f'bleu2: {np.mean(bleu2_list)}')
+    logger.info(f'bleu3: {np.mean(bleu3_list)}')
+    logger.info(f'bleu4: {np.mean(bleu4_list)}')
+    logger.info(f'ROUGE-1: {np.mean(rouge1_list)}')
+    logger.info(f'ROUGE-2: {np.mean(rouge2_list)}')
+    logger.info(f'ROUGE-L: {np.mean(rougeL_list)}')
 
 
 def inference(model, dataset, tokenizer, batch_size=16):
@@ -112,6 +114,7 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # load model
+    logger.info(f'load {MODEL_NAME} for evaluation')
     if MODEL_TYPE == "BART":
         model = BartForConditionalGeneration.from_pretrained(MODEL_NAME)
     elif MODEL_TYPE == "T5":
@@ -119,9 +122,11 @@ if __name__ == '__main__':
     model.to(device)
 
     # load tokenizer
+    logger.info(f'load {MODEL_NAME} tokenizer for evaluation')
     tokenizer = PreTrainedTokenizerFast.from_pretrained(MODEL_NAME)
 
     # load dataset
+    logger.info(f'load dataset {TEST_DATASET_NAME} for hugging face')
     test_dataset = QGDataset(
                         dataset_name=TEST_DATASET_NAME,
                         tokenizer_name=MODEL_NAME,
@@ -132,12 +137,15 @@ if __name__ == '__main__':
                    )
 
     # generate question
+    logger.info(f'generate question sentences')
     generated_questions, labels = inference(model, test_dataset, tokenizer, batch_size=BATCH_SIZE)
 
     # evaluation model performances
+    logger.info(f'evaluate scores on generated questions')
     evaluate(labels, generated_questions)
 
     # save prediction result
+    logger.info(f'save prediction csv file {OUTPUT_PATH}')
     output = pd.DataFrame({'question': generated_questions, 'label': labels})
     output.to_csv(OUTPUT_PATH, index=False)
     
