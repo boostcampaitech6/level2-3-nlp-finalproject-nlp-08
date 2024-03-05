@@ -1,65 +1,71 @@
+import nltk
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+from rouge import Rouge
+import numpy as np
 import pandas as pd
-import torch
 
-from transformers import (
-    BartForConditionalGeneration,
-    PreTrainedTokenizerFast
-)
+def eval_scores(reference, candidate):
+    rouge = Rouge()
+    rouge_scores = rouge.get_scores(candidate, reference)
+    rouge_1 = rouge_scores[0]['rouge-1']['f']  # F1-score
+    rouge_2 = rouge_scores[0]['rouge-2']['f']  # F1-score
+    rouge_l = rouge_scores[0]['rouge-l']['f']  # F1-score
 
-class MyDataset(torch.utils.data.Dataset):
-    def __init__(self, data_path, tokenizer, max_len):
-        self.dataset = pd.read_csv(data_path)
-        self.tokenizer = tokenizer
-        self.max_len = max_len
+    reference = [reference.split()]
+    candidate = candidate.split()
 
-    def __getitem__(self, idx):
-        data = self.dataset.iloc[idx]
-        context, answer = data['context'], data['answer']
-        raw_input_ids = self.tokenizer.encode(context + '<unused0>' + answer)
-        padding = [tokenizer.pad_token_id] * (max_len - len(raw_input_ids))
-        input_ids = [tokenizer.bos_token_id] + raw_input_ids + padding + [tokenizer.eos_token_id]
+    bleu1 = sentence_bleu(reference, candidate, weights=(1, 0, 0, 0), smoothing_function=chencherry.method1)
+    bleu2 = sentence_bleu(reference, candidate, weights=(0.5, 0.5, 0, 0), smoothing_function=chencherry.method1)
+    bleu3 = sentence_bleu(reference, candidate, weights=(0.33, 0.33, 0.33, 0), smoothing_function=chencherry.method1)
+    bleu4 = sentence_bleu(reference, candidate, weights=(0.25, 0.25, 0.25, 0.25), smoothing_function=chencherry.method1)
 
-        return torch.tensor([input_ids])
-    
-    def __len__(self):
-        return len(self.dataset)
+    result = {
+        'bleu1': bleu1,
+        'bleu2': bleu2,
+        'bleu3': bleu3,
+        'bleu4': bleu4,
+        'rouge-1': rouge_1,
+        'rouge-2': rouge_2,
+        'rouge-l': rouge_l
+    }
+    return result
+
+test_data_path = ""
+output_data_path = ""
+
+test_df = pd.read_csv(test_data_path)
+question = list(test_df['question'])
+
+output_df = pd.read_csv(output_data_path)
+generated_question = list(output_df['question'])
+
+len_questions = len(question)
+
+bleu1_list = np.zeros(len_questions)
+bleu2_list = np.zeros(len_questions)
+bleu3_list = np.zeros(len_questions)
+bleu4_list = np.zeros(len_questions)
+rouge1_list = np.zeros(len_questions)
+rouge2_list = np.zeros(len_questions)
+rougeL_list = np.zeros(len_questions)
 
 
-def inference(model, dataset, tokenizer):
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=16, shuffle=False)
-    
-    model.eval()
-    
-    questions = []
-    for _, data in enumerate(dataloader):
-        with torch.no_grad():
-            output = model.generate(data)
-        question = tokenizer.decode(output.squeeze().tolist(), skip_special_tokenz=True)
-        questions.append(question)
+chencherry = SmoothingFunction()
 
-    return questions
+for i in range(len_questions):
+    result = eval_scores(question[i], generated_question[i])
+    bleu1_list[i] = result['bleu1']
+    bleu2_list[i] = result['bleu2']
+    bleu3_list[i] = result['bleu3']
+    bleu4_list[i] = result['bleu4']
+    rouge1_list[i] = result['rouge-1']
+    rouge2_list[i] = result['rouge-2']
+    rougeL_list[i] = result['rouge-l']
 
-if __name__ == '__main__':
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    # load model
-    model_path = "Sehong/kobart-QuestionGeneration"
-    model = BartForConditionalGeneration.from_pretrained(model_path)
-    model.to(device)
-
-    # load tokenizer
-    tokenizer_name = "Sehong/kobart-QuestionGeneration"
-    tokenizer = PreTrainedTokenizerFast.from_pretrained(tokenizer_name)
-
-    # load dataset
-    max_len = 512
-    data_path = "data.csv"
-    dataset = MyDataset(data_path, tokenizer, max_len)
-
-    # generate question
-    generated_questions = inference(model, dataset, tokenizer)
-
-    output_path = "../output.csv"
-    output = pd.DataFrame({'question': generated_questions})
-    output.to_csv(output_path, index=False)
-    
+print('bleu1: ', np.mean(bleu1_list))
+print('bleu2: ', np.mean(bleu2_list))
+print('bleu3: ', np.mean(bleu3_list))
+print('bleu4: ', np.mean(bleu4_list))
+print('ROUGE-1: ', np.mean(rouge1_list))
+print('ROUGE-2: ', np.mean(rouge2_list))
+print('ROUGE-L: ', np.mean(rougeL_list))
