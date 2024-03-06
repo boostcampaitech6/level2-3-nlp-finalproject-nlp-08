@@ -31,3 +31,10 @@
   display: flex;
   justify-content: center;
 }
+
+.back-button {
+  float: right;
+  position: absolute;
+  right: calc(8vw);
+  top: calc(15vh);
+}

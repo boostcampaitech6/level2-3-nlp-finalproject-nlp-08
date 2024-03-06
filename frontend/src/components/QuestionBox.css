@@ -9,7 +9,7 @@
 
 .large-right-textbox {
   /* 본문 텍스트 박스 내 설정 */
-  background-color: white;
+  background-color: rgb(245, 245, 245);
   width: 70%;
   height: 60px;
   font-size: 16px;

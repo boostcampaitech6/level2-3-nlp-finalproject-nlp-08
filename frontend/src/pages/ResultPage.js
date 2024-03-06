@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import FixedTextBox from "../components/FixedTextBox";
 import NormalButton from "../components/NormalButton";
 import QuestionBox from "../components/QuestionBox";
 import CheckAnswerBox from "../components/CheckAnswerBox";
+import { IoArrowUndoCircle } from "react-icons/io5";
 import "./ResultPage.css";
 
 const ResultPage = () => {
@@ -18,10 +20,10 @@ const ResultPage = () => {
   const [userAnswer, setUserAnswer] = useState("");
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
+  const navigate = useNavigate();
 
-  const handleCheckAnswer = () => {
-    setIsAnswerCorrect(userAnswer === correctAnswer);
-    setButtonClicked(true);
+  const handleBackButtonClick = () => {
+    navigate("/");
   };
 
   return (
@@ -31,6 +33,11 @@ const ResultPage = () => {
       </header>
       <div className="mainpage-textbox-container">
         <FixedTextBox value={text} />
+        <IoArrowUndoCircle
+          className="back-button"
+          size="70"
+          onClick={handleBackButtonClick}
+        />
       </div>
 
       <div className="question-area">
