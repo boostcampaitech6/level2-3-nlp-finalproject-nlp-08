@@ -12,6 +12,8 @@ uvicorn = "^0.27.1"
 torch = "^2.2.1"
 transformers = "^4.38.1"
 loguru = "^0.7.2"
+keybert = "^0.8.4"
+numpy = "^1.26.4"
 
 
 [build-system]
