@@ -5,6 +5,6 @@
 4. python src/main.py
 
 ## API docs
-localhost:8000/{api url}/docs
+localhost:8000/docs
 
-localhost:8000/{api url}/redoc
+localhost:8000/redoc
