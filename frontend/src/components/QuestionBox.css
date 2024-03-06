@@ -1,15 +1,21 @@
-.right-container {  /* 본문 텍스트 박스의 위치 설정 */
+.right-container {
+  /* 본문 텍스트 박스의 위치 설정 */
   display: flex;
   align-items: flex-start;
+  width: 100%;
+  justify-content: center;
   margin-top: 3%;
 }
-  
-.large-right-textbox {  /* 본문 텍스트 박스 내 설정 */
+
+.large-right-textbox {
+  /* 본문 텍스트 박스 내 설정 */
   background-color: white;
-  width: calc(100vw - 400px);
+  width: 70%;
   height: 60px;
   font-size: 16px;
   padding: 10px;
   resize: none;
   text-align: center;
-}   
+  line-height: 56px;
+  border-radius: 20px;
+}

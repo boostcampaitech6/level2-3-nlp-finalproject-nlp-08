@@ -1,16 +1,19 @@
-.result-container {  /* 본문 텍스트 박스의 위치 설정 */
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    width: 100vw;
-    padding-top: 0px;
-  }
-  
-  .large-result-textbox {  /* 본문 텍스트 박스 내 설정 */
-    width: calc(100vw - 400px);
-    height: 500px;
-    font-size: 16px;
-    padding: 10px;
-    resize: none;
-    margin-top: 20px;
-  }
+.result-container {
+  /* 본문 텍스트 박스의 위치 설정 */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100vw;
+  padding-top: 0px;
+}
+
+.large-result-textbox {
+  /* 본문 텍스트 박스 내 설정 */
+  width: 70%;
+  height: calc(100vh - 380px);
+  font-size: 16px;
+  padding: 15px;
+  resize: none;
+  margin-top: 20px;
+  border-radius: 20px;
+}

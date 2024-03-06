@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import FixedTextBox from '../components/FixedTextBox';
-import NormalButton from '../components/NormalButton';
-import QuestionBox from '../components/QuestionBox';
-import CheckAnswerBox from '../components/CheckAnswerBox';
-import './ResultPage.css';
-
+import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
+import FixedTextBox from "../components/FixedTextBox";
+import NormalButton from "../components/NormalButton";
+import QuestionBox from "../components/QuestionBox";
+import CheckAnswerBox from "../components/CheckAnswerBox";
+import "./ResultPage.css";
 
 const ResultPage = () => {
   const location = useLocation();
@@ -27,11 +26,14 @@ const ResultPage = () => {
 
   return (
     <div>
-      <div className='result-area' >
-        <FixedTextBox value={text} />    
+      <header className="App-header">
+        <h1>Reading Mate</h1>
+      </header>
+      <div className="mainpage-textbox-container">
+        <FixedTextBox value={text} />
       </div>
 
-      <div className='question-area'>
+      <div className="question-area">
         <QuestionBox value={question} />
       </div>
     </div>
