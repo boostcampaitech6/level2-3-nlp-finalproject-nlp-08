@@ -4,7 +4,7 @@
 2. start database server `brew services start postgresql`
 3. access psql shell `psql postgres`
 4. show databses `postgres=# \l`
-5. create databse (ex.testdb) `createdb testdb`
+5. create databse (ex.testdb) `CREATE DATABASE testdb;`
 6. show databses `postgres=# \l`
 7. replace databse uri `postgresql://<username>@localhost:5432/<testdb>` on config.yaml
 4. Install poetry : https://python-poetry.org/docs/
