@@ -33,7 +33,7 @@ if __name__:
 
     # 데이터 불러오기
     print('Loading Data')
-    DATA_DIR = '../../data/기술과학_train_ver2.csv'
+    DATA_DIR = '../../data/기술과학_valid_ver2.csv'
     train_df = pd.read_csv(DATA_DIR)
 
     temp_df = train_df[(train_df['answer_type'] == '절차(방법)형') | (train_df['answer_type'] == '정답경계추출형')| (train_df['answer_type'] == '다지선다형')]
@@ -69,10 +69,11 @@ if __name__:
     args = parser.parse_args()
     
     model = BertModel.from_pretrained(args.model_name)
+    # model = 'paraphrase-multilingual-MiniLM-L12-v2'
     kw_model = KeyBERT(model)
 
     new_data = []
-    for _, data in tqdm(docs_df[:1].iterrows(), desc='keyword extraction', total = len(docs_df[:1])):
+    for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
         keyword = keyword_extraction(context, kw_model, 
@@ -94,7 +95,7 @@ if __name__:
         for keyword in data['keyword']:
             if keyword in answer_df[answer_df['id']==id]['answer']:
                 score += 1
-    # score_list = [score, args.model_name, args.num_to_gen, args.n_gram, args.use_maxsum, args.nr_candidates, args.use_mmr, args.diversity]
+
     score_dict = {'score':score,
                   'model_name':args.model_name, 
                   'num_to_gen':args.num_to_gen, 
@@ -106,5 +107,11 @@ if __name__:
                   }
     score_df = pd.DataFrame([score_dict])
 
+    file = 'score.csv'
+    if os.path.isfile(file):
+        with open(file, 'a') as file_data:
+            score_df.to_csv(file, mode='a',index=False, header=False)
+    else:
+        score_df.to_csv(file, index=False)
         
     
