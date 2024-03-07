@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React /*, { useState } */ from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import FixedTextBox from "../components/FixedTextBox";
@@ -16,7 +16,7 @@ const ResultPage = () => {
   console.log("Text:", text);
   console.log("Question:", question);
   console.log("Correct Answer:", correctAnswer);
-  
+
   const navigate = useNavigate();
 
   const handleBackButtonClick = () => {

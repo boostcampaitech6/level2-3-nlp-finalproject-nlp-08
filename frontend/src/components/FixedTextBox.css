@@ -18,8 +18,24 @@
   border: 1px solid #000000;
   border-radius: 20px;
   text-align: left;
+  white-space: pre-line;
+  overflow-y: scroll;
 }
 
 .highlighted-button {
-  background-color: #f0f0f0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  background-color: #fff385;
+  border: none;
+  font-size: 16px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.highlighted-button:hover {
+  background-color: #fbff0d;
+}
+.highlighted-button:active {
+  background-color: #d4d400;
 }
