@@ -1,5 +1,4 @@
 .right-container {
-  /* 본문 텍스트 박스의 위치 설정 */
   display: flex;
   align-items: flex-start;
   width: 100%;
@@ -7,8 +6,8 @@
   margin-top: 3%;
 }
 
+
 .large-right-textbox {
-  /* 본문 텍스트 박스 내 설정 */
   background-color: rgb(245, 245, 245);
   width: 70%;
   height: 60px;
@@ -18,4 +17,37 @@
   text-align: center;
   line-height: 56px;
   border-radius: 20px;
+}
+
+.checking-icon {
+  position: absolute;
+  right: 15%;
+  vertical-align: middle;
+  margin-right: 30px;
+  margin-top: 20px;
+  font-size: 40px;
+}
+
+.correct {
+  color: green;
+}
+
+.incorrect {
+  color: red;
+} 
+
+.shake {
+  animation: shake 0.5s ease; /* Add a shake animation */
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px); /* Adjust the amount of shake as needed */
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px); /* Adjust the amount of shake as needed */
+  }
 }

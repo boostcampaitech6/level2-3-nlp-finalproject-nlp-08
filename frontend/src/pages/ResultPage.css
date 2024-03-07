@@ -29,3 +29,15 @@
   right: calc(6vw);
   top: calc(15vh);
 }
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px); /* Adjust the amount of shake as needed */
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px); /* Adjust the amount of shake as needed */
+  }
+}
