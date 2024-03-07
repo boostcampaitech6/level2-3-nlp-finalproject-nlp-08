@@ -7,6 +7,7 @@ class UserFeedbackBase(BaseModel):
     context: str
     answer: str
     question: str
+    like: bool
 
 
 # For response

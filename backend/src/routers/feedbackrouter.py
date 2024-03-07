@@ -11,7 +11,10 @@ feedbackrouter = APIRouter()
 
 @feedbackrouter.post('/feedback/')
 async def create_userfeedback(feedback: UserFeedbackBase, db: Annotated[Session, Depends(get_db)]):
-    db_feedback = models.UserFeedback(question=feedback.question, answer=feedback.answer, context=feedback.context)
+    db_feedback = models.UserFeedback(question=feedback.question, 
+                                      answer=feedback.answer, 
+                                      context=feedback.context,
+                                      like=feedback.like)
     db.add(db_feedback)
     db.commit()
     db.refresh(db_feedback)
