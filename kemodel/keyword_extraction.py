@@ -84,3 +84,13 @@ if __name__:
                                      diversity=args.diversity)
         new_data.append([id, context, keyword])
     keyword_df = pd.DataFrame(new_data, columns=['id', 'context', 'keyword'])
+
+    
+    # 점수 계산
+    score = 0
+    for _, data in keyword_df.iterrows():
+        id = data['id']
+        for keyword in data['keyword']:
+            print(keyword, answer_df[answer_df['id']==id]['answer'])
+            if keyword in answer_df[answer_df['id']==id]['answer']:
+                score += 1
