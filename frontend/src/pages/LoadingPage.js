@@ -1,12 +1,12 @@
 import {React} from 'react';
-import {TailSpin} from 'react-loader-dom';
+import {TailSpin} from 'react-loader-spinner';
 import './LoadingPage.css';
 
 const LoadingPage = () => {
     return(
         <div className='loader-container'>
             <TailSpin 
-                visible={True}
+                visible={true}
                 height={100}
                 width={100}
                 color="#2D9596"
