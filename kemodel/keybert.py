@@ -13,3 +13,11 @@ def keyword_extraction(context, kw_model, num_to_gen = 5, stop_words = None, n_g
     keywords = [k[0] for k in keywords]
 
     return keywords
+
+def remove_tag(context):
+    '''
+    html tag 제거, 공백 하나로 대체
+    '''
+    temp_context = re.sub(r'<[^>]+>', ' ', context)
+    final_context = re.sub(r'\s+', ' ', temp_context)
+    return final_context
