@@ -12,7 +12,7 @@
 6. poetry install 
 7. python src/main.py
 
-
+## PostgreSQL commands
 stop postgresql server `brew services stop postgresql`
 
 change database `postgres=# \c testdb`
