@@ -72,7 +72,7 @@ if __name__:
     kw_model = KeyBERT(model)
 
     new_data = []
-    for _, data in tqdm(docs_df[:5].iterrows(), desc='keyword extraction', total = len(docs_df)):
+    for _, data in tqdm(docs_df[:1].iterrows(), desc='keyword extraction', total = len(docs_df[:1])):
         id = data['id']
         context = data['context']
         keyword = keyword_extraction(context, kw_model, 
@@ -89,10 +89,22 @@ if __name__:
     
     # 점수 계산
     score = 0
-    for _, data in keyword_df[:3].iterrows():
+    for _, data in keyword_df.iterrows():
         id = data['id']
         for keyword in data['keyword']:
             if keyword in answer_df[answer_df['id']==id]['answer']:
                 score += 1
-    score_list = [score, args.model_name, args.num_to_gen, args.n_gram, args.use_maxsum, args.nr_candidates, args.use_mmr, args.diversity]
-    score_df = pd.DataFrame(score_list, columns=['score', 'model_name', 'num_to_gen', 'n_gram', 'use_maxsum', 'nr_candidates', 'use_mmr', 'diversity'])
+    # score_list = [score, args.model_name, args.num_to_gen, args.n_gram, args.use_maxsum, args.nr_candidates, args.use_mmr, args.diversity]
+    score_dict = {'score':score,
+                  'model_name':args.model_name, 
+                  'num_to_gen':args.num_to_gen, 
+                  'n_gram':args.n_gram, 
+                  'use_maxsum':args.use_maxsum, 
+                  'nr_candidates':args.nr_candidates, 
+                  'use_mmr':args.use_mmr, 
+                  'diversity':args.diversity
+                  }
+    score_df = pd.DataFrame([score_dict])
+
+        
+    
