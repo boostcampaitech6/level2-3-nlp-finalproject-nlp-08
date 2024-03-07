@@ -20,7 +20,7 @@ function HomePage() {
       toast.error("10자 이상 입력해주세요.");
       return;
     }
-
+  
     axios
       .post(API_URL, {
         context: text,
@@ -29,22 +29,10 @@ function HomePage() {
       .then((response) => {
         const result_doc = response.data;
         const questionAnswerPairs = result_doc.question_answer_pairs;
-
-        console.log(result_doc);
-        let firstQuestion, firstAnswer;
-
-        if (questionAnswerPairs.length > 0) {
-          const firstQuestionAnswerPair = questionAnswerPairs[0];
-
-          firstQuestion = firstQuestionAnswerPair["question"];
-          firstAnswer = firstQuestionAnswerPair["answer"];
-          console.log(
-            `First Key: ${firstQuestion}, First Value: ${firstAnswer}`
-          );
-        }
+        console.log("Question-Answer Pairs:", questionAnswerPairs);
 
         navigate("/result", {
-          state: { text: text, question: firstQuestion, answer: firstAnswer },
+          state: { text: text, questionAnswerPairs: questionAnswerPairs },
         });
       })
       .catch((error) => {

@@ -2,15 +2,13 @@ import React from "react";
 import Box from "@mui/material/Box";
 import "./FixedTextBox.css";
 
-const FixedTextBox = ({ value, answer }) => {
-  const regex = new RegExp(`(${answer})`, "gi");
+const FixedTextBox = ({ value, keywords, onButtonClick }) => {
+  console.log("Keywords:", keywords);
+  const regex = new RegExp(`(${keywords.join('|')})`, 'gi');
   const preParts = value.split(regex);
   const parts = preParts.map((prePart) => prePart.replace(/\. /g, ".\n\n"));
 
   console.log("Parts:", parts);
-  const handleButtonClick = (clickedText) => {
-    console.log(`Button clicked: ${clickedText}`);
-  };
 
   return (
     <div className="result-container">
@@ -21,7 +19,9 @@ const FixedTextBox = ({ value, answer }) => {
               key={index}
               className="highlighted-button"
               variant="contained"
-              onClick={() => handleButtonClick(part)}
+              onClick={() =>  {
+                onButtonClick(part, parts[index]);
+              }}
             >
               {part}
             </button>
