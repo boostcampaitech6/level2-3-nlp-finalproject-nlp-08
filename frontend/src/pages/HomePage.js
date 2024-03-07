@@ -64,7 +64,10 @@ function HomePage() {
       </header>
 
       <div className="mainpage-textbox-container">
-        <InputTextBox value={text} onChange={(e) => setText(e.target.value)} />
+        <InputTextBox 
+          value={text} 
+          onChange={(e) => setText(e.target.value)}
+          />
       </div>
       <div className="mainpage-button-container">
         <NormalButton label="분석하기" onClick={handleSendTextClick} />

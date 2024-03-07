@@ -2,24 +2,21 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import FixedTextBox from "../components/FixedTextBox";
-import NormalButton from "../components/NormalButton";
 import QuestionBox from "../components/QuestionBox";
-import CheckAnswerBox from "../components/CheckAnswerBox";
 import { IoArrowUndoCircle } from "react-icons/io5";
 import "./ResultPage.css";
 
 const ResultPage = () => {
   const location = useLocation();
   console.log("Location state:", location.state);
+
   const text = location.state.text;
   const question = location.state.question;
   const correctAnswer = location.state.answer;
   console.log("Text:", text);
   console.log("Question:", question);
   console.log("Correct Answer:", correctAnswer);
-  const [userAnswer, setUserAnswer] = useState("");
-  const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
-  const [buttonClicked, setButtonClicked] = useState(false);
+  
   const navigate = useNavigate();
 
   const handleBackButtonClick = () => {

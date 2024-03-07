@@ -1,5 +1,6 @@
 import React from 'react';
 import './InputTextBox.css';
+import placeholder from './PlaceHolder';
 
 const InputTextBox = ({ value, onChange }) => {
 
@@ -8,7 +9,8 @@ const InputTextBox = ({ value, onChange }) => {
       <textarea
         className="large-input"
         value={value}
-        onChange={onChange}
+        onChange={onChange} 
+        placeholder={placeholder}
       />
     </div>
   );
