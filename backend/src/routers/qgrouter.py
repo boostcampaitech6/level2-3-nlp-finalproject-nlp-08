@@ -2,7 +2,7 @@ from loguru import logger
 from fastapi import APIRouter
 
 from schemas import QuestionGenerationResponse, QuestionGenerationRequest
-from model import generate_question, extract_keywords
+from model_utils import generate_question, extract_keywords
 
 qgrouter = APIRouter()
 
