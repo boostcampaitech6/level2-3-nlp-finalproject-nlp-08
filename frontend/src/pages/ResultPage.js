@@ -1,4 +1,4 @@
-import React /*, { useState } */ from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import FixedTextBox from "../components/FixedTextBox";
@@ -20,10 +20,13 @@ const ResultPage = () => {
   console.log("Questions:", questions);
   console.log("Answers:", answers);
 
-  const handleButtonClick = (clickedText, part) => {
+  const handleButtonClick = (clickedText) => {
     console.log(`Button clicked in ResultPage: ${clickedText}`);
-    console.log(`Corresponding Part: ${part}`);
-    // 여기에서 클릭 이벤트에 대한 추가 로직을 수행할 수 있습니다.
+    if (clickedText === answers[0]) {
+      console.log("Correct!");
+    } else {
+      console.log("Incorrect!");
+    }
   };
 
   const navigate = useNavigate();

@@ -20,7 +20,7 @@ const FixedTextBox = ({ value, keywords, onButtonClick }) => {
               className="highlighted-button"
               variant="contained"
               onClick={() =>  {
-                onButtonClick(part, parts[index]);
+                onButtonClick(part);
               }}
             >
               {part}
