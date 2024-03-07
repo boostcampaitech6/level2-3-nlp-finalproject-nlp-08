@@ -29,7 +29,7 @@ const ResultPage = () => {
         <h1>Reading Mate</h1>
       </header>
       <div className="mainpage-textbox-container">
-        <FixedTextBox value={text} />
+        <FixedTextBox value={text} answer={correctAnswer} />
         <IoArrowUndoCircle
           className="back-button"
           size="70"

@@ -7,7 +7,7 @@
   padding-top: 0px;
 }
 
-.large-result-textbox {
+.result-textbox {
   /* 본문 텍스트 박스 내 설정 */
   width: 70%;
   height: calc(100vh - 380px);
@@ -15,5 +15,11 @@
   padding: 15px;
   resize: none;
   margin-top: 20px;
+  border: 1px solid #000000;
   border-radius: 20px;
+  text-align: left;
+}
+
+.highlighted-button {
+  background-color: #f0f0f0;
 }
