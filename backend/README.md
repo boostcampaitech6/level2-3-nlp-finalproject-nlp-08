@@ -19,7 +19,7 @@ change database `postgres=# \c testdb`
 
 show tables `postgres=# \dt`
 
-show rows from table `SELECT * FROM public.userfeedbacks;`
+show rows from table `SELECT * FROM userfeedbacks;`
 ## API docs
 localhost:8000/docs
 
