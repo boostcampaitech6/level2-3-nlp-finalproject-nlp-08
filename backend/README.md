@@ -1,6 +1,6 @@
 ## How to run
 
-1. Install Postgresql Database `brew install postgresql@14 (for mac)`
+1. Install Postgresql Database(for mac) `brew install postgresql@14`
 2. start database server `brew services start postgresql`
 3. access psql shell `psql postgres`
 4. show databses `postgres=# \l`
