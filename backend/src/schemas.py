@@ -2,6 +2,12 @@ from typing import Optional, List, Dict
 from dataclasses import dataclass
 from pydantic import BaseModel
 
+# For user feedback
+class UserFeedbackBase(BaseModel):
+    context: str
+    answer: str
+    question: str
+
 
 # For response
 @dataclass
