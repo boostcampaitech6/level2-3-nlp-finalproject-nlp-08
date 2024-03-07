@@ -1,9 +1,25 @@
 ## How to run
-1. Install poetry : https://python-poetry.org/docs/
-2. poetry shell
-3. poetry install 
-4. python src/main.py
 
+1. Install Postgresql Database `brew install postgresql@14 (for mac)`
+2. start database server `brew services start postgresql`
+3. access psql shell `psql postgres`
+4. show databses `postgres=# \l`
+5. create databse (ex.testdb) `createdb testdb`
+6. show databses `postgres=# \l`
+7. replace databse uri `postgresql://<username>@localhost:5432/<testdb>` on config.yaml
+4. Install poetry : https://python-poetry.org/docs/
+5. poetry shell
+6. poetry install 
+7. python src/main.py
+
+
+stop postgresql server `brew services stop postgresql`
+
+change database `postgres=# \c testdb`
+
+show tables `postgres=# \dt`
+
+show rows from table `SELECT * FROM public.userfeedbacks;`
 ## API docs
 localhost:8000/docs
 
