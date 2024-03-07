@@ -6,7 +6,7 @@ RUN pip install poetry
 COPY ./poetry.lock ./pyproject.toml /code
 RUN poetry install --no-root
     
-COPY . /code
+COPY ./src /code
 ENV PYTHONPATH "${PYTHONPATH}:/code/src"
 
 CMD [ "poetry" ,"run", "uvicorn", "src.main:app", "--host", "0.0.0.0" ]
