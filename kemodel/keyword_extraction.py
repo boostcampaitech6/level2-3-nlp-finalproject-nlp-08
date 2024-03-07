@@ -70,12 +70,9 @@ if __name__:
     
     model = BertModel.from_pretrained(args.model_name)
     kw_model = KeyBERT(model)
-    print(args.model_name)
-    print(args.diversity)
-    print(type(args.diversity))
 
     new_data = []
-    for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
+    for _, data in tqdm(docs_df[:5].iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
         keyword = keyword_extraction(context, kw_model, 
@@ -95,9 +92,7 @@ if __name__:
     for _, data in keyword_df[:3].iterrows():
         id = data['id']
         for keyword in data['keyword']:
-            print(keyword, answer_df[answer_df['id']==id]['answer'])
             if keyword in answer_df[answer_df['id']==id]['answer']:
                 score += 1
-    score_list = [score, args.model_name, args.num_to_gen, args.n_gram, args.use_maxsum, args.nr_candidate, args.use_mmr, args.diversity]
-    score_df = pd.DataFrame(score_list, columns=['score', 'model_name', 'num_to_gen', 'n_gram', 'use_maxsum', 'nr_candidate', 'use_mmr', 'diversity'])
-    
+    score_list = [score, args.model_name, args.num_to_gen, args.n_gram, args.use_maxsum, args.nr_candidates, args.use_mmr, args.diversity]
+    score_df = pd.DataFrame(score_list, columns=['score', 'model_name', 'num_to_gen', 'n_gram', 'use_maxsum', 'nr_candidates', 'use_mmr', 'diversity'])
