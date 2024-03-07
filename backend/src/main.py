@@ -22,6 +22,7 @@ async def lifespan(app: FastAPI):
                               qg_model=app_config['qg_model'],
                               ke_model=app_config['ke_model'])
     # create db connection
+    models.Base.metadata.create_all(bind=engine)
     yield
     logger.info("shutdown event")
     ml_models.clear()
@@ -32,8 +33,6 @@ origins = [
 ]
 
 app = FastAPI(lifespan=lifespan)
-
-models.Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     DBSessionMiddleware, 
