@@ -91,18 +91,21 @@ if __name__:
 
     score = 0   # 점수 계산
     if_keyword_exist = 0    # keyword가 context에 있는지 확인
-    total_keyword = 0
     for _, data in keyword_df.iterrows():
         id = data['id']
         for keyword in tqdm(data['keyword'], total=len(data)):
-            total_keyword +=1
-            if keyword in str(docs_df[docs_df['id']==id]['context']):
-                print(type(docs_df[docs_df['id']==id]['context']))
+            context_str = str(docs_df[docs_df['id']==id]['context'].values[0])  # 시리즈를 문자열로 변환
+            print('keyword:', keyword)
+            print(context_str)
+            if keyword in context_str:
                 if_keyword_exist += 1
+                print('k')
+            print(answer_df[answer_df['id']==id]['answer'])
             if keyword in answer_df[answer_df['id']==id]['answer']:
                 score += 1
     score = score/len(keyword_df)
     if_keyword_exist = if_keyword_exist/len(keyword_df)
+    print(if_keyword_exist)
 
     score_dict = {'score':score,
                   'if_keyword_exist':if_keyword_exist,
