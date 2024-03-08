@@ -6,6 +6,7 @@ from collections import defaultdict
 from tqdm import tqdm
 import argparse
 import os
+import torch
 
 def keyword_extraction(context, kw_model, num_to_gen=5, stop_words = None, n_gram = 5, use_maxsum=True, nr_candidates=10, use_mmr=True, diversity=0.5):
 
@@ -21,12 +22,13 @@ def keyword_extraction(context, kw_model, num_to_gen=5, stop_words = None, n_gra
 
     return keywords
 
-def remove_tag(context):
+def preprocessing_data(context):
     '''
     html tag 제거, 공백 하나로 대체
     '''
     temp_context = re.sub(r'<[^>]+>', ' ', context)
-    final_context = re.sub(r'\s+', ' ', temp_context)
+    temp_context = re.sub(r'\s+', ' ', temp_context)
+    final_context = temp_context.lower()
     return final_context
 
 if __name__:
@@ -47,7 +49,7 @@ if __name__:
         answer = data['answer']
         if id not in temp_dict.keys():
             temp_dict[id] = [answer]
-            docs_list.append([id, remove_tag(data['context'])])
+            docs_list.append([id, preprocessing_data(data['context'])])
         else:
             temp_dict[id].append(answer)
 
@@ -68,12 +70,12 @@ if __name__:
     parser.add_argument('--diversity', required=False, type=float, default=0.8, help='use_mmr=True할 경우 다양성을 얼마나 줄건지(숫자 클수록 다양성 커짐)')
     args = parser.parse_args()
     
-    model = BertModel.from_pretrained(args.model_name)
-    # model = 'paraphrase-multilingual-MiniLM-L12-v2'
+    # model = BertModel.from_pretrained(args.model_name)
+    model = 'paraphrase-multilingual-MiniLM-L12-v2'
     kw_model = KeyBERT(model)
 
     new_data = []
-    for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
+    for _, data in tqdm(docs_df[:2].iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
         keyword = keyword_extraction(context, kw_model, 
@@ -87,23 +89,30 @@ if __name__:
         new_data.append([id, context, keyword])
     keyword_df = pd.DataFrame(new_data, columns=['id', 'context', 'keyword'])
 
-    
-    # 점수 계산
-    score = 0
+    score = 0   # 점수 계산
+    if_keyword_exist = 0    # keyword가 context에 있는지 확인
+    total_keyword = 0
     for _, data in keyword_df.iterrows():
         id = data['id']
-        for keyword in data['keyword']:
+        for keyword in tqdm(data['keyword'], total=len(data)):
+            total_keyword +=1
+            if keyword in str(docs_df[docs_df['id']==id]['context']):
+                print(type(docs_df[docs_df['id']==id]['context']))
+                if_keyword_exist += 1
             if keyword in answer_df[answer_df['id']==id]['answer']:
                 score += 1
+    score = score/len(keyword_df)
+    if_keyword_exist = if_keyword_exist/len(keyword_df)
 
     score_dict = {'score':score,
+                  'if_keyword_exist':if_keyword_exist,
                   'model_name':args.model_name, 
                   'num_to_gen':args.num_to_gen, 
                   'n_gram':args.n_gram, 
                   'use_maxsum':args.use_maxsum, 
                   'nr_candidates':args.nr_candidates, 
                   'use_mmr':args.use_mmr, 
-                  'diversity':args.diversity
+                  'diversity':args.diversity,
                   }
     score_df = pd.DataFrame([score_dict])
 
