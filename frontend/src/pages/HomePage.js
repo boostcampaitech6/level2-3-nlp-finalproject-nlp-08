@@ -5,6 +5,7 @@ import axios from "axios";
 
 import NormalButton from "../components/NormalButton";
 import InputTextBox from "../components/InputTextBox";
+import placeholder  from "../components/PlaceHolder";
 import "./HomePage.css";
 
 function HomePage() {
@@ -15,15 +16,21 @@ function HomePage() {
     process.env.REACT_APP_API_URL || "http://localhost:8000/generate";
   const MIN_TEXT_LENGTH = 10;
 
+  const default_text = placeholder.split("예시)\n")[1]
+
   const handleSendTextClick = () => {
-    if (text.length < MIN_TEXT_LENGTH) {
+    let inputText = text
+    if (inputText.length === 0) {
+      inputText = default_text
+    }
+    else if (inputText.length < MIN_TEXT_LENGTH) {
       toast.error("10자 이상 입력해주세요.");
       return;
     }
-  
+
     axios
       .post(API_URL, {
-        context: text,
+        context: inputText,
         answers: sample_answers,
       })
       .then((response) => {
@@ -32,7 +39,7 @@ function HomePage() {
         console.log("Question-Answer Pairs:", questionAnswerPairs);
 
         navigate("/result", {
-          state: { text: text, questionAnswerPairs: questionAnswerPairs },
+          state: { text: inputText, questionAnswerPairs: questionAnswerPairs },
         });
       })
       .catch((error) => {
@@ -55,6 +62,7 @@ function HomePage() {
         <InputTextBox 
           value={text} 
           onChange={(e) => setText(e.target.value)}
+          placeholder={placeholder}
           />
       </div>
       <div className="mainpage-button-container">
