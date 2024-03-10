@@ -83,17 +83,20 @@ if __name__:
     kw_model = KeyBERT(model)
 
     new_data = []
-    for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
+    for _, data in tqdm(docs_df[:12].iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
-        keyword = keyword_extraction(context, kw_model, 
-                                     num_to_gen = args.num_to_gen, 
-                                     stop_words = None, 
-                                     n_gram = args.n_gram,
-                                     use_maxsum=args.use_maxsum, 
-                                     nr_candidates=args.nr_candidates,
-                                     use_mmr=args.use_mmr,
-                                     diversity=args.diversity)
+        keyword = []
+        for i in range(1, args.n_gram+1):
+            keywords_candidates = keyword_extraction(context, kw_model, 
+                                        num_to_gen = args.num_to_gen, 
+                                        stop_words = None, 
+                                        n_gram = i,
+                                        use_maxsum=args.use_maxsum, 
+                                        nr_candidates=args.nr_candidates,
+                                        use_mmr=args.use_mmr,
+                                        diversity=args.diversity)
+            keyword.extend(keywords_candidates)
         new_data.append([id, context, keyword])
     keyword_df = pd.DataFrame(new_data, columns=['id', 'context', 'keyword'])
     
@@ -107,10 +110,11 @@ if __name__:
             context_str = str(docs_df[docs_df['id']==id]['context'].values[0])  # 시리즈를 문자열로 변환
             if keyword in context_str:
                 if_keyword_exist += 1
-            if keyword in answer_df[answer_df['id']==id]['answer']:
+            if keyword in answer_df[answer_df['id']==id]['answer'].tolist()[0]:
                 score += 1
-    score = score/total_keyword
-    if_keyword_exist = if_keyword_exist/total_keyword
+                print('true')
+    # score = '{:.4f}'.format(score/total_keyword)
+    if_keyword_exist = '{:.4f}'.format(if_keyword_exist/total_keyword)
 
     score_dict = {'score':score,
                   'if_keyword_exist':if_keyword_exist,
