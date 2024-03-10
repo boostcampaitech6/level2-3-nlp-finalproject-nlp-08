@@ -8,6 +8,8 @@ import argparse
 import os
 import torch
 
+from preprocessing import preprocessing_data
+
 def keyword_extraction(context, kw_model, num_to_gen=5, stop_words = None, n_gram = 5, use_maxsum=True, nr_candidates=10, use_mmr=True, diversity=0.5):
 
     keywords = kw_model.extract_keywords(context, 
@@ -22,14 +24,14 @@ def keyword_extraction(context, kw_model, num_to_gen=5, stop_words = None, n_gra
 
     return keywords
 
-def preprocessing_data(context):
-    '''
-    html tag 제거, 공백 하나로 대체
-    '''
-    temp_context = re.sub(r'<[^>]+>', ' ', context)
-    temp_context = re.sub(r'\s+', ' ', temp_context)
-    final_context = temp_context.lower()
-    return final_context
+# def preprocessing_data(context):
+#     '''
+#     html tag 제거, 공백 하나로 대체
+#     '''
+#     temp_context = re.sub(r'<[^>]+>', ' ', context)
+#     temp_context = re.sub(r'\s+', ' ', temp_context)
+#     final_context = temp_context.lower()
+#     return final_context
 
 if __name__:
 
@@ -72,9 +74,9 @@ if __name__:
     parser.add_argument('--model_name', required=False, default='skt/kobert-base-v1', help='모델 이름')
     parser.add_argument('--num_to_gen', required=False, type=int, default=3, help='생성할 keyword 수')
     parser.add_argument('--n_gram', required=False, type=int, default=5, help='keyword의 max n gram')
-    parser.add_argument('--use_maxsum', required=True, help='다양성 방법1')
+    parser.add_argument('--use_maxsum', required=False, help='다양성 방법1')
     parser.add_argument('--nr_candidates',required=False, type=int, help='use_maxsum=True일 경우 고려할 대상 개수')
-    parser.add_argument('--use_mmr', required=True, help='다양성 방법2')
+    parser.add_argument('--use_mmr', required=False, help='다양성 방법2')
     parser.add_argument('--diversity', required=False, type=float, default=0.8, help='use_mmr=True할 경우 다양성을 얼마나 줄건지(숫자 클수록 다양성 커짐)')
     args = parser.parse_args()
     
@@ -83,19 +85,40 @@ if __name__:
     kw_model = KeyBERT(model)
 
     new_data = []
-    for _, data in tqdm(docs_df[:12].iterrows(), desc='keyword extraction', total = len(docs_df)):
+    for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
         keyword = []
         for i in range(1, args.n_gram+1):
-            keywords_candidates = keyword_extraction(context, kw_model, 
-                                        num_to_gen = args.num_to_gen, 
-                                        stop_words = None, 
-                                        n_gram = i,
-                                        use_maxsum=args.use_maxsum, 
-                                        nr_candidates=args.nr_candidates,
-                                        use_mmr=args.use_mmr,
-                                        diversity=args.diversity)
+            if args.use_maxsum == 'False' and args.use_mmr == 'False':
+                keywords_candidates = keyword_extraction(context, kw_model, 
+                                            num_to_gen = args.num_to_gen, 
+                                            stop_words = None, 
+                                            n_gram = i)
+            elif args.use_maxsum == 'True' and args.use_mmr == 'False':
+                keywords_candidates = keyword_extraction(context, kw_model, 
+                                            num_to_gen = args.num_to_gen, 
+                                            stop_words = None, 
+                                            n_gram = i,
+                                            use_maxsum=args.use_maxsum, 
+                                            nr_candidates=args.nr_candidates,
+                                            )
+            elif args.use_maxsum == 'False' and args.use_mmr == 'True':
+                keywords_candidates = keyword_extraction(context, kw_model, 
+                                            num_to_gen = args.num_to_gen, 
+                                            stop_words = None, 
+                                            n_gram = i,
+                                            use_mmr=args.use_mmr,
+                                            diversity=args.diversity)
+            elif args.use_maxsum == 'True' and args.use_mmr == 'True':
+                keywords_candidates = keyword_extraction(context, kw_model, 
+                                            num_to_gen = args.num_to_gen, 
+                                            stop_words = None, 
+                                            n_gram = i,
+                                            use_maxsum=args.use_maxsum, 
+                                            nr_candidates=args.nr_candidates,
+                                            use_mmr=args.use_mmr,
+                                            diversity=args.diversity)
             keyword.extend(keywords_candidates)
         new_data.append([id, context, keyword])
     keyword_df = pd.DataFrame(new_data, columns=['id', 'context', 'keyword'])
@@ -112,11 +135,11 @@ if __name__:
                 if_keyword_exist += 1
             if keyword in answer_df[answer_df['id']==id]['answer'].tolist()[0]:
                 score += 1
-                print('true')
-    # score = '{:.4f}'.format(score/total_keyword)
-    if_keyword_exist = '{:.4f}'.format(if_keyword_exist/total_keyword)
 
+    score_rate = '{:.4f}'.format(score/total_keyword)
+    if_keyword_exist = '{:.4f}'.format(if_keyword_exist/total_keyword)
     score_dict = {'score':score,
+                  'score_rate':score_rate,
                   'if_keyword_exist':if_keyword_exist,
                   'model_name':args.model_name, 
                   'num_to_gen':args.num_to_gen, 
@@ -130,7 +153,9 @@ if __name__:
 
     #keyword vs answer 비교 csv파일
     merged_df = pd.merge(keyword_df, answer_df, on='id', how='left')
-    merged_df[['id', 'answer', 'keyword']].to_csv('keyword_answer.csv')
+    only_model = args.model_name.split('/')
+    only_model = only_model[1]
+    merged_df[['id', 'answer', 'keyword']].to_csv(os.path.join('keyword_answer', f'{only_model}_{args.use_maxsum}_{args.use_mmr}.csv'), index=False)
 
     file = 'score.csv'
     if os.path.isfile(file):
