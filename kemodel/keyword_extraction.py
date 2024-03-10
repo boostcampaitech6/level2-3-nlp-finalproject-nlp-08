@@ -88,7 +88,7 @@ if __name__:
     for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
-        keyword = []
+        keyword = set()
         for i in range(1, args.n_gram+1):
             if args.use_maxsum == 'False' and args.use_mmr == 'False':
                 keywords_candidates = keyword_extraction(context, kw_model, 
@@ -119,7 +119,7 @@ if __name__:
                                             nr_candidates=args.nr_candidates,
                                             use_mmr=args.use_mmr,
                                             diversity=args.diversity)
-            keyword.extend(keywords_candidates)
+            keyword.update(keywords_candidates)
         new_data.append([id, context, keyword])
     keyword_df = pd.DataFrame(new_data, columns=['id', 'context', 'keyword'])
     
