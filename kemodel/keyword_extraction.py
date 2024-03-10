@@ -1,7 +1,7 @@
 from keybert import KeyBERT
 import pandas as pd
 import re
-from transformers import BertModel
+from transformers import BertModel, AutoModel
 from collections import defaultdict
 from tqdm import tqdm
 import argparse
@@ -33,14 +33,22 @@ def preprocessing_data(context):
 
 if __name__:
 
-    # 데이터 불러오기
-    print('Loading Data')
-    DATA_DIR = '../../data/기술과학_valid_ver2.csv'
-    train_df = pd.read_csv(DATA_DIR)
+    # # 데이터 불러오기
+    # print('Loading Data')
+    # DATA_DIR = '../../data/기술과학_valid_ver2.csv'
+    # train_df = pd.read_csv(DATA_DIR)
 
-    temp_df = train_df[(train_df['answer_type'] == '절차(방법)형') | (train_df['answer_type'] == '정답경계추출형')| (train_df['answer_type'] == '다지선다형')]
-    temp_df = temp_df[['id', 'context', 'answer_type', 'answer']]
+    # temp_df = train_df[(train_df['answer_type'] == '절차(방법)형') | (train_df['answer_type'] == '정답경계추출형')| (train_df['answer_type'] == '다지선다형')]
+    # temp_df = temp_df[['id', 'context', 'answer_type', 'answer']]
     
+    # koquard 데이터 불러오기
+    DATA_DIR = '../../data/squad_kor_v1_test_reformatted.csv'
+    train_df = pd.read_csv(DATA_DIR)
+    temp_df = train_df[['context', 'question', 'answer']]
+
+
+    temp_df['id'] = temp_df['context'].astype('category').cat.codes
+
     # unique한 context 데이터셋 만들기
     temp_dict = defaultdict()
     docs_list = []
@@ -70,12 +78,12 @@ if __name__:
     parser.add_argument('--diversity', required=False, type=float, default=0.8, help='use_mmr=True할 경우 다양성을 얼마나 줄건지(숫자 클수록 다양성 커짐)')
     args = parser.parse_args()
     
-    # model = BertModel.from_pretrained(args.model_name)
-    model = 'paraphrase-multilingual-MiniLM-L12-v2'
+    model = AutoModel.from_pretrained(args.model_name)
+    # model = 'paraphrase-multilingual-MiniLM-L12-v2'
     kw_model = KeyBERT(model)
 
     new_data = []
-    for _, data in tqdm(docs_df[:2].iterrows(), desc='keyword extraction', total = len(docs_df)):
+    for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
         keyword = keyword_extraction(context, kw_model, 
@@ -88,24 +96,21 @@ if __name__:
                                      diversity=args.diversity)
         new_data.append([id, context, keyword])
     keyword_df = pd.DataFrame(new_data, columns=['id', 'context', 'keyword'])
-
+    
     score = 0   # 점수 계산
     if_keyword_exist = 0    # keyword가 context에 있는지 확인
+    total_keyword = 0
     for _, data in keyword_df.iterrows():
         id = data['id']
         for keyword in tqdm(data['keyword'], total=len(data)):
+            total_keyword+=1
             context_str = str(docs_df[docs_df['id']==id]['context'].values[0])  # 시리즈를 문자열로 변환
-            print('keyword:', keyword)
-            print(context_str)
             if keyword in context_str:
                 if_keyword_exist += 1
-                print('k')
-            print(answer_df[answer_df['id']==id]['answer'])
             if keyword in answer_df[answer_df['id']==id]['answer']:
                 score += 1
-    score = score/len(keyword_df)
-    if_keyword_exist = if_keyword_exist/len(keyword_df)
-    print(if_keyword_exist)
+    score = score/total_keyword
+    if_keyword_exist = if_keyword_exist/total_keyword
 
     score_dict = {'score':score,
                   'if_keyword_exist':if_keyword_exist,
@@ -118,6 +123,10 @@ if __name__:
                   'diversity':args.diversity,
                   }
     score_df = pd.DataFrame([score_dict])
+
+    #keyword vs answer 비교 csv파일
+    merged_df = pd.merge(keyword_df, answer_df, on='id', how='left')
+    merged_df[['id', 'answer', 'keyword']].to_csv('keyword_answer.csv')
 
     file = 'score.csv'
     if os.path.isfile(file):
