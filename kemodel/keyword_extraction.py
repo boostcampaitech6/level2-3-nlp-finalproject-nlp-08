@@ -9,29 +9,8 @@ import os
 import torch
 
 from preprocessing import preprocessing_data
+from keybert_model import KeywordExtraction
 
-def keyword_extraction(context, kw_model, num_to_gen=5, stop_words = None, n_gram = 5, use_maxsum=True, nr_candidates=10, use_mmr=True, diversity=0.5):
-
-    keywords = kw_model.extract_keywords(context, 
-                                      keyphrase_ngram_range=(1, n_gram), 
-                                      stop_words=stop_words, 
-                                      top_n=num_to_gen,
-                                      use_maxsum=use_maxsum,
-                                      nr_candidates=nr_candidates,
-                                      use_mmr=use_mmr,
-                                      diversity=diversity)
-    keywords = [k[0] for k in keywords]
-
-    return keywords
-
-# def preprocessing_data(context):
-#     '''
-#     html tag 제거, 공백 하나로 대체
-#     '''
-#     temp_context = re.sub(r'<[^>]+>', ' ', context)
-#     temp_context = re.sub(r'\s+', ' ', temp_context)
-#     final_context = temp_context.lower()
-#     return final_context
 
 if __name__:
 
@@ -68,7 +47,7 @@ if __name__:
         final_dict[id] = list(set(answer))
     docs_df = pd.DataFrame(docs_list, columns=['id', 'context'])
     answer_df = pd.DataFrame(list(final_dict.items()), columns = ['id', 'answer'])
-
+    
     # KeyBERT options
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name', required=False, default='skt/kobert-base-v1', help='모델 이름')
@@ -83,42 +62,20 @@ if __name__:
     model = AutoModel.from_pretrained(args.model_name)
     # model = 'paraphrase-multilingual-MiniLM-L12-v2'
     kw_model = KeyBERT(model)
-
+    keywords_object = KeywordExtraction(kw_model, 
+                                        num_to_gen = args.num_to_gen, 
+                                        stop_words = None,
+                                        use_maxsum=args.use_maxsum, 
+                                        nr_candidates=args.nr_candidates,
+                                        use_mmr=args.use_mmr,
+                                        diversity=args.diversity)
     new_data = []
-    for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
+    for _, data in tqdm(docs_df[:3].iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
         keyword = set()
-        for i in range(1, args.n_gram+1):
-            if args.use_maxsum == 'False' and args.use_mmr == 'False':
-                keywords_candidates = keyword_extraction(context, kw_model, 
-                                            num_to_gen = args.num_to_gen, 
-                                            stop_words = None, 
-                                            n_gram = i)
-            elif args.use_maxsum == 'True' and args.use_mmr == 'False':
-                keywords_candidates = keyword_extraction(context, kw_model, 
-                                            num_to_gen = args.num_to_gen, 
-                                            stop_words = None, 
-                                            n_gram = i,
-                                            use_maxsum=args.use_maxsum, 
-                                            nr_candidates=args.nr_candidates,
-                                            )
-            elif args.use_maxsum == 'False' and args.use_mmr == 'True':
-                keywords_candidates = keyword_extraction(context, kw_model, 
-                                            num_to_gen = args.num_to_gen, 
-                                            stop_words = None, 
-                                            n_gram = i,
-                                            use_mmr=args.use_mmr,
-                                            diversity=args.diversity)
-            elif args.use_maxsum == 'True' and args.use_mmr == 'True':
-                keywords_candidates = keyword_extraction(context, kw_model, 
-                                            num_to_gen = args.num_to_gen, 
-                                            stop_words = None, 
-                                            n_gram = i,
-                                            use_maxsum=args.use_maxsum, 
-                                            nr_candidates=args.nr_candidates,
-                                            use_mmr=args.use_mmr,
-                                            diversity=args.diversity)
+        for i in range(1, args.n_gram+1):            
+            keywords_candidates = keywords_object.generate_keywords(context, i)
             keyword.update(keywords_candidates)
         new_data.append([id, context, keyword])
     keyword_df = pd.DataFrame(new_data, columns=['id', 'context', 'keyword'])
@@ -155,7 +112,7 @@ if __name__:
     merged_df = pd.merge(keyword_df, answer_df, on='id', how='left')
     only_model = args.model_name.split('/')
     only_model = only_model[1]
-    merged_df[['id', 'answer', 'keyword']].to_csv(os.path.join('keyword_answer', 'finetune', f'{only_model}_{args.num_to_gen}_{args.use_maxsum}_{args.nr_candidates}_{args.use_mmr}_{args.diversity}.csv'), index=False)
+    merged_df[['id', 'answer', 'keyword']].to_csv(os.path.join('keyword_answer', 'finetune', f'aaaaaaa{only_model}_{args.num_to_gen}_{args.use_maxsum}_{args.nr_candidates}_{args.use_mmr}_{args.diversity}.csv'), index=False)
 
     file = 'score.csv'
     if os.path.isfile(file):
@@ -163,5 +120,3 @@ if __name__:
             score_df.to_csv(file, mode='a',index=False, header=False)
     else:
         score_df.to_csv(file, index=False)
-        
-    
