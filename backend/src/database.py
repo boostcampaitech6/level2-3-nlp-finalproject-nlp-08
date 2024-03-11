@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from dependencies import load_config
 
-SQLALCHEMY_DATABASE_URL = load_config("./config.yaml")['database_uri']
+SQLALCHEMY_DATABASE_URL = load_config("config.yaml")['database_uri']
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
