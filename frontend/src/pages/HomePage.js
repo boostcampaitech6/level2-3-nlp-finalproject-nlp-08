@@ -61,6 +61,7 @@ function HomePage() {
   return (
     <div>
       {loading ? (<LoadingPage />) : (
+      <div>
         <header className="App-header">
           <h1>Reading Mate</h1>
         </header>
@@ -81,6 +82,7 @@ function HomePage() {
             reverseOrder={false}
           />
         </div>
+      </div>
       )}
     </div>
   );
