@@ -1,8 +1,7 @@
 import React from 'react';
 import './InputTextBox.css';
-import placeholder from './PlaceHolder';
 
-const InputTextBox = ({ value, onChange }) => {
+const InputTextBox = ({ value, onChange, placeholder }) => {
 
   return (
     <div className="center-container">
