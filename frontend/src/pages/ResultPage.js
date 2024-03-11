@@ -21,6 +21,7 @@ const ResultPage = () => {
   // const questions = questionAnswerPairs.map((pair) => pair.question);
   // const answers = questionAnswerPairs.map((pair) => pair.answer);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [isAllCorrect, setIsAllCorrect] = useState(false);
   const questions = dummyquestions;
   const answers = dummyanswers;
   const keywords = ["한국은행", "구조 개혁", "사회적 타협", "패스트 팔로어", "골든 타임"]
@@ -38,12 +39,15 @@ const ResultPage = () => {
           setIsCorrect(null);
         } else {
           console.log("All questions answered!");
-          // Handle completion, e.g., navigate to a different page
+          setIsAllCorrect(true);
         }
       }, 1600);
     } else {
       console.log("Incorrect!");
       setIsCorrect(false);
+      setTimeout(() => {
+        setIsCorrect(null);
+      }, 1000);
     }
   };
 
@@ -71,6 +75,7 @@ const ResultPage = () => {
         <QuestionBox 
           value={questions[currentQuestionIndex]} 
           isCorrect={isCorrect} 
+          isAllCorrect={isAllCorrect}
         />
       </div>
     </div>

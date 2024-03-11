@@ -41,13 +41,10 @@
 }
 
 @keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-5px); /* Adjust the amount of shake as needed */
-  }
-  20%, 40%, 60%, 80% {
-    transform: translateX(5px); /* Adjust the amount of shake as needed */
-  }
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-10px); }
+  80% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
 }
