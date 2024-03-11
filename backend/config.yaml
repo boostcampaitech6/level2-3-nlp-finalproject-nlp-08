@@ -1,4 +1,4 @@
 
-database_uri : postgresql://seokwonyoon@localhost:5432/mydatabase
+database_uri : postgresql://song@localhost:5432/testdb
 ke_model : skt/kobert-base-v1
 qg_model : Sehong/kobart-QuestionGeneration
