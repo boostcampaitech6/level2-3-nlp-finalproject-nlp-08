@@ -23,6 +23,12 @@ homebrew를 이용해 Node.js를 설치합니다.
 brew install node
 ```
 
+Ubuntu의 경우, 다음을 통해 Node와 npm을 설치합니다.
+```
+sudo apt update
+sudo apt install nodejs npm
+```
+
 윈도우와 mac에서 Node.js 및 npm이 잘 설치되었는지 확인합니다.
 
 ```

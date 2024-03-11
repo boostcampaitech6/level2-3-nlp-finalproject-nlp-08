@@ -1,29 +1,43 @@
 .result-area {
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: auto;
-    width: 100%;
-    height: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: auto;
 }
 
 .answer-input {
-    width: 100%;
-    height: 100%;
-    font-size: 16px;
-    padding: 10px;
-    resize: none;
-    text-align: left;
-    margin-bottom: 20px;
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  padding: 10px;
+  resize: none;
+  text-align: left;
+  margin-bottom: 20px;
 }
 
 .input {
-    margin-left: 30px;
+  margin-left: 30px;
 }
 
-.back-button-container {  /* 뒤로가기 버튼 위치 설정 */
+.question-area {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: right;
-  margin-top: -100px;
-  margin-right: 10px;
+  justify-content: center;
+}
+
+.back-button {
+  float: right;
+  position: absolute;
+  right: calc(6vw);
+  top: calc(15vh);
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px); /* Adjust the amount of shake as needed */
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px); /* Adjust the amount of shake as needed */
+  }
 }

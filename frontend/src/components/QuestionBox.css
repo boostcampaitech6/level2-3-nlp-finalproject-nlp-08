@@ -1,18 +1,50 @@
-.right-container {  /* 본문 텍스트 박스의 위치 설정 */
-    display: flex;
-    align-items: flex-start;
-    padding-top: 0px;
-    padding-left: 30px;
-  }
-  
-  .large-right-textbox {  /* 본문 텍스트 박스 내 설정 */
-    background-color: white;
-    width: 500px;
-    border: none;
-    height: 200px;
-    font-size: 16px;
-    padding: 10px;
-    resize: none;
-    margin-top: 20px;
-    margin-right: 50px;
-  }
+.right-container {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: center;
+  margin-top: 3%;
+}
+
+
+.large-right-textbox {
+  background-color: rgb(245, 245, 245);
+  width: 70%;
+  height: 60px;
+  font-size: 16px;
+  padding: 10px;
+  resize: none;
+  text-align: center;
+  line-height: 56px;
+  border-radius: 20px;
+}
+
+.checking-icon {
+  position: absolute;
+  right: 15%;
+  vertical-align: middle;
+  margin-right: 30px;
+  margin-top: 20px;
+  font-size: 40px;
+}
+
+.correct {
+  color: green;
+}
+
+.incorrect {
+  color: red;
+} 
+
+.shake {
+  animation: shake 0.5s ease; /* Add a shake animation */
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-10px); }
+  80% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
