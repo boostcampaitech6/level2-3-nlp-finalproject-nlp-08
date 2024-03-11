@@ -6,10 +6,12 @@ import axios from "axios";
 import NormalButton from "../components/NormalButton";
 import InputTextBox from "../components/InputTextBox";
 import placeholder  from "../components/PlaceHolder";
+import LoadingPage from './LoadingPage';
 import "./HomePage.css";
 
 function HomePage() {
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const sample_answers = ["구조 개혁"];
   const API_URL =
@@ -28,24 +30,28 @@ function HomePage() {
       return;
     }
 
-    axios
-      .post(API_URL, {
-        context: inputText,
-        answers: sample_answers,
-      })
-      .then((response) => {
-        const result_doc = response.data;
-        const questionAnswerPairs = result_doc.question_answer_pairs;
-        console.log("Question-Answer Pairs:", questionAnswerPairs);
+    setLoading(true)
+    axios.post(API_URL, { 
+      context: inputText,
+      answers: sample_answers,
+      num_to_generate: 1
+    })
+    .then((response) => {
+      const result_doc  = response.data;
+      const questionAnswerPairs = result_doc.question_answer_pairs;
+      console.log("Question-Answer Pairs:", questionAnswerPairs);
 
-        navigate("/result", {
-          state: { text: inputText, questionAnswerPairs: questionAnswerPairs },
-        });
-      })
-      .catch((error) => {
-        console.log("API 요청 실패:", error);
-        toast.error("글 전송에 실패했습니다.");
+      navigate("/result", {
+        state: { text: inputText, questionAnswerPairs, questionAnswerPairs },
       });
+    })
+    .catch((error) => {
+      console.log('API 요청 실패:', error);
+      toast.error('글 전송에 실패했습니다.');
+    })
+    .finally(() => {
+      setLoading(false);
+    });
   };
 
   const handleDeleteTextClick = () => {
@@ -54,23 +60,28 @@ function HomePage() {
 
   return (
     <div>
-      <header className="App-header">
-        <h1>Reading Mate</h1>
-      </header>
+      {loading ? (<LoadingPage />) : (
+        <header className="App-header">
+          <h1>Reading Mate</h1>
+        </header>
 
-      <div className="mainpage-textbox-container">
-        <InputTextBox 
-          value={text} 
-          onChange={(e) => setText(e.target.value)}
-          placeholder={placeholder}
+        <div className="mainpage-textbox-container">
+          <InputTextBox 
+            value={text} 
+            onChange={(e) => setText(e.target.value)}
+            placeholder={placeholder}
           />
-      </div>
-      <div className="mainpage-button-container">
-        <NormalButton label="분석하기" onClick={handleSendTextClick} />
-        <NormalButton label="전체 삭제" onClick={handleDeleteTextClick} />
-      </div>
+        </div>
 
-      <Toaster position="top-right" reverseOrder={false} />
+        <div className="mainpage-button-container">
+          <NormalButton label="분석하기" onClick={ handleSendTextClick } />
+          <NormalButton label="전체 삭제" onClick={ handleDeleteTextClick } />
+          <Toaster
+            position="top-right"
+            reverseOrder={false}
+          />
+        </div>
+      )}
     </div>
   );
 }

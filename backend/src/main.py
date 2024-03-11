@@ -1,20 +1,28 @@
 from loguru import logger
 from fastapi import FastAPI
+from fastapi_sqlalchemy import DBSessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from contextlib import asynccontextmanager
 
-from dependencies import load_qg_model
+from dependencies import load_qg_model, load_config
 from routers.qgrouter import qgrouter
+from routers.feedbackrouter import feedbackrouter
+import models
+from database import engine
 
 # Lifespan function : load model once / DB connection management
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI):    
     logger.info("start up event")
+    logger.info("load app config")
+    app_config = load_config("./config.yaml")
     logger.info("load model and tokenizer")
-    ml_models = load_qg_model()
-    # load config
+    ml_models = load_qg_model(tokenizer=app_config['qg_model'],
+                              qg_model=app_config['qg_model'],
+                              ke_model=app_config['ke_model'])
     # create db connection
+    models.Base.metadata.create_all(bind=engine)
     yield
     logger.info("shutdown event")
     ml_models.clear()
@@ -27,6 +35,11 @@ origins = [
 app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
+    DBSessionMiddleware, 
+    db_url=load_config("./config.yaml")['database_uri']
+)
+
+app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
@@ -35,11 +48,8 @@ app.add_middleware(
 )
 
 app.include_router(router=qgrouter)
+app.include_router(router=feedbackrouter)
 
-# .env configuration management is needed
-# def load_config():
-    # pass
-                  
 
 @app.get("/")
 def access_root():
