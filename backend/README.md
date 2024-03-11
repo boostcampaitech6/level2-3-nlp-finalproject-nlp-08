@@ -1,4 +1,10 @@
-## How to run
+## How to run server (with docker compose)
+```
+cd backend
+docker-compose up -d
+```
+
+## How to run locally
 
 1. Install Postgresql Database(for mac) `brew install postgresql@14`
 2. start database server `brew services start postgresql`
