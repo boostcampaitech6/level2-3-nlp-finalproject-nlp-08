@@ -22,6 +22,7 @@ async def lifespan(app: FastAPI):
                               qg_model=app_config['qg_model'],
                               ke_model=app_config['ke_model'])
     # create db connection
+    logger.info(f"create db {app_config['database_uri']}")
     models.Base.metadata.create_all(bind=engine)
     yield
     logger.info("shutdown event")

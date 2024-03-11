@@ -1,3 +1,4 @@
+# FROM tiangolo/uvicorn-gunicorn:python3.11-slim
 FROM python:3.9.13-slim
 
 WORKDIR /code

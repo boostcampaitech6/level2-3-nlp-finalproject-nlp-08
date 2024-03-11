@@ -1,4 +1,4 @@
 
-database_uri : postgresql://seokwonyoon@localhost:5432/mydatabase
+database_uri : postgresql://nlp8:postgres@db:5432/nlp8db
 ke_model : skt/kobert-base-v1
 qg_model : Sehong/kobart-QuestionGeneration
