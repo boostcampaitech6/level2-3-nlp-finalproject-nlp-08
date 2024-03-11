@@ -1,14 +1,15 @@
 import React from 'react';
 import './InputTextBox.css';
 
-const InputTextBox = ({ value, onChange }) => {
+const InputTextBox = ({ value, onChange, placeholder }) => {
 
   return (
     <div className="center-container">
       <textarea
         className="large-input"
         value={value}
-        onChange={onChange}
+        onChange={onChange} 
+        placeholder={placeholder}
       />
     </div>
   );
