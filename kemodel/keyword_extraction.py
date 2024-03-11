@@ -155,7 +155,7 @@ if __name__:
     merged_df = pd.merge(keyword_df, answer_df, on='id', how='left')
     only_model = args.model_name.split('/')
     only_model = only_model[1]
-    merged_df[['id', 'answer', 'keyword']].to_csv(os.path.join('keyword_answer', f'{only_model}_{args.use_maxsum}_{args.use_mmr}.csv'), index=False)
+    merged_df[['id', 'answer', 'keyword']].to_csv(os.path.join('keyword_answer', 'finetune', f'{only_model}_{args.num_to_gen}_{args.use_maxsum}_{args.nr_candidates}_{args.use_mmr}_{args.diversity}.csv'), index=False)
 
     file = 'score.csv'
     if os.path.isfile(file):
