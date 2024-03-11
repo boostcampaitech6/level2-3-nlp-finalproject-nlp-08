@@ -16,7 +16,7 @@ from database import engine
 async def lifespan(app: FastAPI):    
     logger.info("start up event")
     logger.info("load app config")
-    app_config = load_config("./config.yaml")
+    app_config = load_config("config.yaml")
     logger.info("load model and tokenizer")
     ml_models = load_qg_model(tokenizer=app_config['qg_model'],
                               qg_model=app_config['qg_model'],
@@ -36,7 +36,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     DBSessionMiddleware, 
-    db_url=load_config("./config.yaml")['database_uri']
+    db_url=load_config("config.yaml")['database_uri']
 )
 
 app.add_middleware(
