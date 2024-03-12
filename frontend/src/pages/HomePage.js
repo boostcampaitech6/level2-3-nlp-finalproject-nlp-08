@@ -42,7 +42,7 @@ function HomePage() {
       console.log("Question-Answer Pairs:", questionAnswerPairs);
 
       navigate("/result", {
-        state: { text: inputText, questionAnswerPairs, questionAnswerPairs },
+        state: { text: inputText, questionAnswerPairs },
       });
     })
     .catch((error) => {

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import FixedTextBox from "../components/FixedTextBox";
 import QuestionBox from "../components/QuestionBox";
 import { IoArrowUndoCircle } from "react-icons/io5";
+import { FaRegThumbsUp, FaRegThumbsDown } from "react-icons/fa";
 import "./ResultPage.css";
 
 const ResultPage = () => {
@@ -25,6 +27,8 @@ const ResultPage = () => {
   const questions = dummyquestions;
   const answers = dummyanswers;
   const keywords = ["한국은행", "구조 개혁", "사회적 타협", "패스트 팔로어", "골든 타임"]
+  const API_URL =
+    process.env.REACT_APP_API_URL || "http://localhost:8000/feedback";
   console.log("Questions:", questions);
   console.log("Answers:", answers);
 
@@ -57,6 +61,22 @@ const ResultPage = () => {
     navigate("/");
   };
 
+  const handleFeedbackButtonClick = async (isLike) => {
+    try {
+      const response = await axios.post(API_URL, {
+        question: questions[currentQuestionIndex],
+        answer: answers[currentQuestionIndex],
+        context: text,
+        like: isLike,
+      });
+      console.log('Feedback sent successfully:', response.data);
+      // You can add additional logic here if needed, such as displaying a success message
+    } catch (error) {
+      console.error('Error sending feedback:', error);
+      // You can add additional error handling logic here, such as displaying an error message
+    }
+  };
+
   return (
     <div>
       <header className="App-header">
@@ -77,6 +97,11 @@ const ResultPage = () => {
           isCorrect={isCorrect} 
           isAllCorrect={isAllCorrect}
         />
+      </div>
+
+      <div className="like-dislike-area">
+        <FaRegThumbsUp className="likeFeedbackButton" onClick={() => handleFeedbackButtonClick(true)} />
+        <FaRegThumbsDown className="disLikeFeedbackButton" onClick={() => handleFeedbackButtonClick(false)} />
       </div>
     </div>
   );
