@@ -27,10 +27,10 @@ const ResultPage = () => {
   const questions = dummyquestions;
   const answers = dummyanswers;
   const keywords = ["한국은행", "구조 개혁", "사회적 타협", "패스트 팔로어", "골든 타임"]
-  const API_URL =
-    process.env.REACT_APP_API_URL || "http://localhost:8000/feedback";
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/feedback";
   console.log("Questions:", questions);
   console.log("Answers:", answers);
+  const [submittedIssues, setSubmittedIssues] = useState(new Set());
 
   const handleButtonClick = (clickedText) => {
     console.log(`Button clicked in ResultPage: ${clickedText}`);
@@ -62,19 +62,24 @@ const ResultPage = () => {
   };
 
   const handleFeedbackButtonClick = async (isLike) => {
+    const currentQuestionAnswer = `${questions[currentQuestionIndex]}-${answers[currentQuestionIndex]}`;
+
+    if (!submittedIssues.has(currentQuestionAnswer)) {
     try {
-      const response = await axios.post(API_URL, {
-        question: questions[currentQuestionIndex],
-        answer: answers[currentQuestionIndex],
-        context: text,
-        like: isLike,
-      });
-      console.log('Feedback sent successfully:', response.data);
-      // You can add additional logic here if needed, such as displaying a success message
-    } catch (error) {
-      console.error('Error sending feedback:', error);
-      // You can add additional error handling logic here, such as displaying an error message
-    }
+        const response = await axios.post(API_URL, {
+          question: questions[currentQuestionIndex],
+          answer: answers[currentQuestionIndex],
+          context: text,
+          like: isLike,
+        });
+        console.log('Feedback sent successfully:', response.data);
+        setSubmittedIssues(new Set([...submittedIssues, currentQuestionAnswer]));
+      } catch (error) {
+        console.error('Error sending feedback:', error);
+      }
+    } else {
+      console.log('Issue already submitted as feedback');
+    };
   };
 
   return (
