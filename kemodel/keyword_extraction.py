@@ -8,8 +8,10 @@ import argparse
 import os
 import torch
 
-from preprocessing import preprocessing_data
+from preprocessing import extracts_nouns
 from keybert_model import KeywordExtraction
+from transformers.pipelines import pipeline
+from transformers import AutoModel
 
 
 if __name__:
@@ -27,7 +29,7 @@ if __name__:
     train_df = pd.read_csv(DATA_DIR)
     temp_df = train_df[['context', 'question', 'answer']]
 
-
+    # context별로 id 재구성(같은 context -> 같은 id)
     temp_df['id'] = temp_df['context'].astype('category').cat.codes
 
     # unique한 context 데이터셋 만들기
@@ -38,7 +40,7 @@ if __name__:
         answer = data['answer']
         if id not in temp_dict.keys():
             temp_dict[id] = [answer]
-            docs_list.append([id, preprocessing_data(data['context'])])
+            docs_list.append([id, extracts_nouns(data['context'])])
         else:
             temp_dict[id].append(answer)
 
@@ -59,9 +61,11 @@ if __name__:
     parser.add_argument('--diversity', required=False, type=float, default=0.8, help='use_mmr=True할 경우 다양성을 얼마나 줄건지(숫자 클수록 다양성 커짐)')
     args = parser.parse_args()
     
-    model = AutoModel.from_pretrained(args.model_name)
-    # model = 'paraphrase-multilingual-MiniLM-L12-v2'
-    kw_model = KeyBERT(model)
+    # model = AutoModel.from_pretrained(args.model_name)
+    # model = args.model_name
+    kw_model = KeyBERT()
+    # model = pipeline("feature-extraction", model="args.model_name")
+    # kw_model = KeyBERT(model)
     keywords_object = KeywordExtraction(kw_model, 
                                         num_to_gen = args.num_to_gen, 
                                         stop_words = None,
@@ -69,8 +73,10 @@ if __name__:
                                         nr_candidates=args.nr_candidates,
                                         use_mmr=args.use_mmr,
                                         diversity=args.diversity)
+    
+    # 키워드 추출
     new_data = []
-    for _, data in tqdm(docs_df[:3].iterrows(), desc='keyword extraction', total = len(docs_df)):
+    for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
         keyword = set()
@@ -82,12 +88,12 @@ if __name__:
     
     score = 0   # 점수 계산
     if_keyword_exist = 0    # keyword가 context에 있는지 확인
-    total_keyword = 0
+    total_keyword = 0   # 생성된 keyword 개수
     for _, data in keyword_df.iterrows():
         id = data['id']
         for keyword in tqdm(data['keyword'], total=len(data)):
             total_keyword+=1
-            context_str = str(docs_df[docs_df['id']==id]['context'].values[0])  # 시리즈를 문자열로 변환
+            context_str = str(docs_df[docs_df['id']==id]['context'].values[0])
             if keyword in context_str:
                 if_keyword_exist += 1
             if keyword in answer_df[answer_df['id']==id]['answer'].tolist()[0]:
@@ -112,7 +118,7 @@ if __name__:
     merged_df = pd.merge(keyword_df, answer_df, on='id', how='left')
     only_model = args.model_name.split('/')
     only_model = only_model[1]
-    merged_df[['id', 'answer', 'keyword']].to_csv(os.path.join('keyword_answer', 'finetune', f'aaaaaaa{only_model}_{args.num_to_gen}_{args.use_maxsum}_{args.nr_candidates}_{args.use_mmr}_{args.diversity}.csv'), index=False)
+    merged_df[['id', 'keyword', 'answer', 'context']].to_csv(os.path.join('keyword_answer', f'{only_model}_{args.num_to_gen}_{args.use_maxsum}_{args.nr_candidates}_{args.use_mmr}_{args.diversity}.csv'), index=False)
 
     file = 'score.csv'
     if os.path.isfile(file):
