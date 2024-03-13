@@ -1,5 +1,5 @@
 import re
-# from konlpy.tag import Mecab
+from konlpy.tag import Kkma
 
 def preprocessing_data(context):
     '''
@@ -10,8 +10,9 @@ def preprocessing_data(context):
     final_context = temp_context.lower()
     return final_context
 
-# def extracts_nouns(context):
-#     context = preprocessing_data(context)
-#     mecab = Mecab()
-#     nouns = mecab.nouns(context)
-#     return nouns
+def extracts_nouns(context):
+    context = preprocessing_data(context)
+    kkma = Kkma()
+    nouns = kkma.nouns(context)
+    sentence = ' '.join(nouns)
+    return sentence
