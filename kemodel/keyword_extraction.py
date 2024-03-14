@@ -8,7 +8,7 @@ import argparse
 import os
 import torch
 
-from preprocessing import preprocessing_data, extracts_nouns
+from utils import preprocessing_data, extracts_nouns
 from keybert_model import KeywordExtraction
 from transformers.pipelines import pipeline
 from transformers import AutoModel
