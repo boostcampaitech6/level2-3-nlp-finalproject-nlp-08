@@ -10,9 +10,12 @@ def preprocessing_data(context):
     final_context = temp_context.lower()
     return final_context
 
-def extracts_nouns(context):
-    context = preprocessing_data(context)
+def extracts_nouns(keyword):
     kkma = Kkma()
-    nouns = kkma.nouns(context)
-    sentence = ' '.join(nouns)
-    return sentence
+    for k in keyword.split():
+        temp_keyword = ''
+        for word, pos in kkma.pos(k):
+            if pos.startswith('N'):
+                temp_keyword += word
+        if len(temp_keyword) != 0:
+            return temp_keyword

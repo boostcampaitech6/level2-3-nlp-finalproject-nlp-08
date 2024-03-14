@@ -8,7 +8,7 @@ import argparse
 import os
 import torch
 
-from preprocessing import extracts_nouns
+from preprocessing import preprocessing_data, extracts_nouns
 from keybert_model import KeywordExtraction
 from transformers.pipelines import pipeline
 from transformers import AutoModel
@@ -40,7 +40,7 @@ if __name__:
         answer = data['answer']
         if id not in temp_dict.keys():
             temp_dict[id] = [answer]
-            docs_list.append([id, extracts_nouns(data['context'])])
+            docs_list.append([id, preprocessing_data(data['context'])])
         else:
             temp_dict[id].append(answer)
 
@@ -55,9 +55,9 @@ if __name__:
     parser.add_argument('--model_name', required=False, default='skt/kobert-base-v1', help='모델 이름')
     parser.add_argument('--num_to_gen', required=False, type=int, default=3, help='생성할 keyword 수')
     parser.add_argument('--n_gram', required=False, type=int, default=5, help='keyword의 max n gram')
-    parser.add_argument('--use_maxsum', required=False, help='다양성 방법1')
+    parser.add_argument('--use_maxsum', required=True, help='다양성 방법1')
     parser.add_argument('--nr_candidates',required=False, type=int, help='use_maxsum=True일 경우 고려할 대상 개수')
-    parser.add_argument('--use_mmr', required=False, help='다양성 방법2')
+    parser.add_argument('--use_mmr', required=True, help='다양성 방법2')
     parser.add_argument('--diversity', required=False, type=float, default=0.8, help='use_mmr=True할 경우 다양성을 얼마나 줄건지(숫자 클수록 다양성 커짐)')
     args = parser.parse_args()
     
@@ -76,12 +76,13 @@ if __name__:
     
     # 키워드 추출
     new_data = []
-    for _, data in tqdm(docs_df.iterrows(), desc='keyword extraction', total = len(docs_df)):
+    for _, data in tqdm(docs_df[:3].iterrows(), desc='keyword extraction', total = len(docs_df)):
         id = data['id']
         context = data['context']
         keyword = set()
         for i in range(1, args.n_gram+1):            
             keywords_candidates = keywords_object.generate_keywords(context, i)
+            keywords_candidates = [extracts_nouns(i) for i in keywords_candidates]
             keyword.update(keywords_candidates)
         new_data.append([id, context, keyword])
     keyword_df = pd.DataFrame(new_data, columns=['id', 'context', 'keyword'])
@@ -118,7 +119,8 @@ if __name__:
     merged_df = pd.merge(keyword_df, answer_df, on='id', how='left')
     only_model = args.model_name.split('/')
     only_model = only_model[1]
-    merged_df[['id', 'keyword', 'answer', 'context']].to_csv(os.path.join('keyword_answer', f'{only_model}_{args.num_to_gen}_{args.use_maxsum}_{args.nr_candidates}_{args.use_mmr}_{args.diversity}.csv'), index=False)
+    # merged_df[['id', 'keyword', 'answer', 'context']].to_csv(os.path.join('keyword_answer', f'{only_model}_{args.num_to_gen}_{args.use_maxsum}_{args.nr_candidates}_{args.use_mmr}_{args.diversity}.csv'), index=False)
+    merged_df[['id', 'keyword', 'answer', 'context']].to_csv(os.path.join('keyword_answer', 'test.csv'), index=False)
 
     file = 'score.csv'
     if os.path.isfile(file):
