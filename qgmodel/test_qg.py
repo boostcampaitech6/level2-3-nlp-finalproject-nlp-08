@@ -1,3 +1,6 @@
+import argparse
+import json
+
 from loguru import logger
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from rouge import Rouge
@@ -15,16 +18,6 @@ from transformers import (
 
 from dataset.QGDataset import QGDataset
 
-MODEL_NAME = "Sehong/kobart-QuestionGeneration"
-# MODEL_NAME = "Sehong/t5-large-QuestionGeneration"
-TRAIN_DATASET_NAME = "2024-level3-finalproject-nlp-8/squad_kor_v1_train_reformatted"
-TEST_DATASET_NAME = "2024-level3-finalproject-nlp-8/squad_kor_v1_test_reformatted"
-MODEL_TYPE = "BART"  # ['T5', 'BART']
-INPUT_MAX_LEN = 512
-BATCH_SIZE = 2
-HF_ACCESS_TOKEN = "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"
-SEED = 8
-OUTPUT_PATH = "../output.csv"
 
 def eval_scores(reference, candidate):
     rouge = Rouge()
@@ -86,6 +79,8 @@ def evaluate(reference, candidate):
     logger.info(f'ROUGE-2: {np.mean(rouge2_list)}')
     logger.info(f'ROUGE-L: {np.mean(rougeL_list)}')
 
+    return result
+
 
 def inference(model, dataset, tokenizer, batch_size=16):
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False)
@@ -107,45 +102,62 @@ def inference(model, dataset, tokenizer, batch_size=16):
                 questions.append(question)
 
     return questions, labels
+    
 
 if __name__ == '__main__':
-    set_seed(SEED)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--seed', default=8, type=int)
+    parser.add_argument('--batch_size', default=2, type=int)
+    parser.add_argument('--input_max_len', default=512, type=int)
+    parser.add_argument('--output_path', default="../artifacts/output.csv", type=str)
+    parser.add_argument('--output_metric_path', default="../artifacts/metric_result.json", type=str)
+    parser.add_argument('--hf_access_token', default="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", type=str)
+    parser.add_argument('--model_type', default="BART", type=str)  # ['T5', 'BART']
+    parser.add_argument('--model_name', default="Sehong/kobart-QuestionGeneration", type=str) # "Sehong/t5-large-QuestionGeneration"
+    parser.add_argument('--test_dataset_name', default="2024-level3-finalproject-nlp-8/squad_kor_v1_test_reformatted", type=str)
+
+    args = parser.parse_args(args=[])
+
+    set_seed(args.seed)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # load model
-    logger.info(f'load {MODEL_NAME} for evaluation')
-    if MODEL_TYPE == "BART":
-        model = BartForConditionalGeneration.from_pretrained(MODEL_NAME)
-    elif MODEL_TYPE == "T5":
-        qg_model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
+    logger.info(f'load {args.model_name} for evaluation')
+    if args.model_type == "BART":
+        model = BartForConditionalGeneration.from_pretrained(args.model_name)
+    elif args.model_type == "T5":
+        qg_model = T5ForConditionalGeneration.from_pretrained(args.model_name)
     model.to(device)
 
     # load tokenizer
-    logger.info(f'load {MODEL_NAME} tokenizer for evaluation')
-    tokenizer = PreTrainedTokenizerFast.from_pretrained(MODEL_NAME)
+    logger.info(f'load {args.model_name} tokenizer for evaluation')
+    tokenizer = PreTrainedTokenizerFast.from_pretrained(args.model_name)
 
     # load dataset
-    logger.info(f'load dataset {TEST_DATASET_NAME} for hugging face')
+    logger.info(f'load dataset {args.test_dataset_name} for hugging face')
     test_dataset = QGDataset(
-                        dataset_name=TEST_DATASET_NAME,
-                        tokenizer_name=MODEL_NAME,
-                        input_max_len = INPUT_MAX_LEN,
+                        dataset_name=args.test_dataset_name,
+                        tokenizer_name=args.model_name,
+                        input_max_len = args.input_max_len,
                         train=False,
-                        model_type=MODEL_TYPE,
-                        token=HF_ACCESS_TOKEN
+                        model_type=args.model_type,
+                        token=args.hf_access_token
                    )
 
     # generate question
     logger.info(f'generate question sentences')
-    generated_questions, labels = inference(model, test_dataset, tokenizer, batch_size=BATCH_SIZE)
+    generated_questions, labels = inference(model, test_dataset, tokenizer, batch_size=args.batch_size)
 
     # evaluation model performances
     logger.info(f'evaluate scores on generated questions')
-    evaluate(labels, generated_questions)
+    metric_result = evaluate(labels, generated_questions)
+
+    with open(args.output_metric_path, "w") as outfile: 
+        json.dump(metric_result, outfile)
 
     # save prediction result
-    logger.info(f'save prediction csv file {OUTPUT_PATH}')
+    logger.info(f'save prediction csv file {args.output_path}')
     output = pd.DataFrame({'question': generated_questions, 'label': labels})
-    output.to_csv(OUTPUT_PATH, index=False)
+    output.to_csv(args.output_path, index=False)
     

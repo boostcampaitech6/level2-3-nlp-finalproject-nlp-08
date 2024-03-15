@@ -9,11 +9,10 @@ class QGDataset(torch.utils.data.Dataset):
     def __init__(self, dataset_name, tokenizer_name, input_max_len, model_type, train=True, token=None, ignore_index=-100):
         
         self.dataset = load_dataset(dataset_name, token=token)  
-        # temporary setting only 10 sample using!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if train == True:
-            self.dataset = self.dataset['train'].to_pandas()[:10] 
+            self.dataset = self.dataset['train'].to_pandas()
         else:
-            self.dataset = self.dataset['test'].to_pandas()[:10] 
+            self.dataset = self.dataset['test'].to_pandas()
 
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
         self.tokenizer.sep_token = '<unused0>'
@@ -50,7 +49,8 @@ class QGDataset(torch.utils.data.Dataset):
         if self.model_type == 'BART':
             tokenized_input = self.tokenizer(instance['context'] + self.tokenizer.sep_token + instance['answer'], 
                                              max_length=self.input_max_len, 
-                                             padding="max_length")
+                                             padding="max_length",
+                                             truncation=True)
             input_ids = tokenized_input['input_ids']
             attention_mask = tokenized_input['attention_mask']
 
@@ -66,7 +66,8 @@ class QGDataset(torch.utils.data.Dataset):
         elif self.model_type == 'T5':
             tokenized_input = self.tokenizer('answer:' + instance['answer'] + 'content:' + instance['context'], 
                                              max_length=self.input_max_len, 
-                                             padding="max_length")
+                                             padding="max_length",
+                                             truncation=True)
             input_ids = tokenized_input['input_ids']
             attention_mask = tokenized_input['attention_mask']
 
