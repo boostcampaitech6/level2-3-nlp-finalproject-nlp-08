@@ -54,7 +54,7 @@ def check_added_data_number(**kwargs):
 
     return "get_new_data_task" if count >= target_number else "skip_task"
 
-def get_new_data(**kwargs):
+def get_and_save_new_data(**kwargs):
     last_checked_time = Variable.get("last checked time")
 
     print(f"date: {last_checked_time}")
@@ -111,9 +111,9 @@ with DAG(
         op_kwargs=database_args
     )
 
-    get_new_data_task = PythonOperator(
+    get_and_save_new_data_task = PythonOperator(
         task_id="get_new_data_task",
-        python_callable=get_new_data,
+        python_callable=get_and_save_new_data,
         op_kwargs=database_args
     )
 
