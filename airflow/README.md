@@ -28,6 +28,6 @@ pip install 'apache-airflow-providers-postgres'
 3. '+' 버튼 클릭
 4. 필요한 부분 작성
     - key: 코드에서는 last checked time 사용중. 원하는 변수명 사용하고 코드 수정하셔도 됩니다.
-    - val: 변수에 저장할 값
+    - val: 변수에 저장할 값. 초기값은 1970-01-01 00:00:00 형식으로 원하시는 날짜로 사용해주세요.
     - description: 변수 설명. 생략 가능.
 5. 저장
