@@ -43,7 +43,7 @@ def check_added_data_number(**kwargs):
 def get_new_data(**kwargs):
     last_checked_time = Variable.get("last checked time")
 
-    hook = PostgresHook(postgres_conn_id=kwargs["conn_id"])
+    hook = PostgresHook(postgres_conn_id="my_postgres")
     conn = hook.get_conn()
 
     cursor = conn.cursor()
