@@ -97,9 +97,6 @@ def generate_question(context, answer):
 
     return question
 
-def save_data():
-    pass
-
 with DAG(
     dag_id='get_new_data',
     default_args=default_args,
