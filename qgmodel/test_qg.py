@@ -116,7 +116,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_name', default="Sehong/kobart-QuestionGeneration", type=str) # "Sehong/t5-large-QuestionGeneration"
     parser.add_argument('--test_dataset_name', default="2024-level3-finalproject-nlp-8/squad_kor_v1_test_reformatted", type=str)
 
-    args = parser.parse_args(args=[])
+    args = parser.parse_args()
 
     set_seed(args.seed)
 
