@@ -20,6 +20,7 @@ database_args = {
 }
 
 
+
 def check_added_data_number(**kwargs):
     last_checked_time = Variable.get("last checked time")
     target_number = 3
@@ -43,21 +44,29 @@ def check_added_data_number(**kwargs):
 def get_new_data(**kwargs):
     last_checked_time = Variable.get("last checked time")
 
+    print(f"date: {last_checked_time}")
+
     hook = PostgresHook(postgres_conn_id="my_postgres")
     conn = hook.get_conn()
 
     cursor = conn.cursor()
-    query = f"SELECT * FROM {kwargs['table_name']} WHERE {kwargs['timestamp']} > %s"
-    cursor.execute(query, (last_checked_time,))
 
-    new_data = cursor.fetchall()
+    query_true = f"SELECT * FROM {kwargs['table_name']} WHERE {kwargs['timestamp']} > %s AND like = TRUE"
+    cursor.execute(query_true, (last_checked_time,))
+    data_true = cursor.fetchall()
+
+    query_false = f"SELECT * FROM {kwargs['table_name']} WHERE {kwargs['timestamp']} > %s AND like = FALSE"
+    cursor.execute(query_false, (last_checked_time,))
+    data_false = cursor.fetchall()
+
     new_time_value = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     Variable.set("last checked time", new_time_value)
 
     cursor.close()
     conn.close()
 
-    print(f"data: {new_data}", f"updated date: {last_checked_time}")
+    print(f"true_data: {data_true}")
+    print(f"false_data: {data_false}")
 
 with DAG(
     dag_id='get_new_data',
@@ -83,4 +92,5 @@ with DAG(
         task_id="skip_task"
     )
 
-    check_data_task >> [get_new_data_task, skip_task]
+    check_data_task >> get_new_data_task 
+    check_data_task >> skip_task
