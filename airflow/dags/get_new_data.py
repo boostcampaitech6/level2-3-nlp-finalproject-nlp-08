@@ -1,10 +1,16 @@
 from datetime import datetime, timedelta
+import json
 
 from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+
+from openai import OpenAI
+
+OUTPUT_PATH = "../data/user_feedback.json"
+DATA_FALSE_PATH = "../data/data_false.json"
 
 default_args = {
     "owner": "boostcamp",
@@ -19,7 +25,7 @@ database_args = {
     "timestamp": "created_at",
 }
 
-
+COLUMNS = ['id', 'context', 'answer', 'question', 'like', 'create_at']
 
 def check_added_data_number(**kwargs):
     last_checked_time = Variable.get("last checked time")
@@ -65,8 +71,33 @@ def get_new_data(**kwargs):
     cursor.close()
     conn.close()
 
-    print(f"true_data: {data_true}")
-    print(f"false_data: {data_false}")
+    print(f"data_true: {data_true}")
+    print(f"data_false: {data_false}")
+
+    json_data_true = [dict(zip(COLUMNS, row)) for row in data_true]
+    json_data_false = [dict(zip(COLUMNS, row)) for row in data_false]
+    with open(OUTPUT_PATH, 'w') as f:
+        json.dump(json_data_true, f, default=str, indent=4)
+    with open(DATA_FALSE_PATH, 'w') as f:
+        json.dump(json_data_false, f, default=str, indent=4)
+
+def generate_question(context, answer):
+    client = OpenAI()
+
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "이 시스템은 제공된 본문을 기반으로 하여, 제시된 답변이 명확한 답이 될 수 있는 의문문 형식의 질문을 생성합니다. 본문에서 주요 정보를 추출하여, 이를 바탕으로 한 질문을 구성하되, 질문이 제시된 답변을 직접적으로 요구하도록 해주세요. 생성된 질문은 포멀하고 전문적인 언어를 사용해야 하며, 본문의 내용과 직접적으로 관련되어야 합니다. 질문은 정보를 명확하게 요구하는 형태이며, 사용자가 이해하기 쉬워야 합니다."},
+            {"role": "user", "content": f"본문:{context}, 답변: {answer}"}
+        ]
+    )
+
+    question = completion.choices[0].message.content
+
+    return question
+
+def save_data():
+    pass
 
 with DAG(
     dag_id='get_new_data',
