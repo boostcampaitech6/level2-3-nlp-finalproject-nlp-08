@@ -1,4 +1,4 @@
-
+import pandas as pd
 import numpy as np
 import torch
 from datasets import load_dataset
@@ -8,11 +8,14 @@ from transformers import AutoTokenizer
 class QGDataset(torch.utils.data.Dataset):
     def __init__(self, dataset_name, tokenizer_name, input_max_len, model_type, train=True, token=None, ignore_index=-100):
         
-        self.dataset = load_dataset(dataset_name, token=token)  
-        if train == True:
-            self.dataset = self.dataset['train'].to_pandas()
+        if dataset_name[-3:] == 'csv':
+            self.dataset = pd.read_csv(dataset_name)  
         else:
-            self.dataset = self.dataset['test'].to_pandas()
+            self.dataset = load_dataset(dataset_name, token=token)  
+            if train == True:
+                self.dataset = self.dataset['train'].to_pandas()
+            else:
+                self.dataset = self.dataset['test'].to_pandas()
 
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
         self.tokenizer.sep_token = '<unused0>'
