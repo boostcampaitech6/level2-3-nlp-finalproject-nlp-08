@@ -9,8 +9,8 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 from openai import OpenAI
 
-OUTPUT_PATH = "../data/user_feedback.json"
-DATA_FALSE_PATH = "../data/data_false.json"
+OUTPUT_PATH = "../data/user_feedback.csv"
+DATA_FALSE_PATH = "../data/data_false.csv"
 
 CLIENT = OpenAI()
 
