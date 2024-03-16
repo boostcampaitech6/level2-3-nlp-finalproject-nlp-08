@@ -13,7 +13,6 @@ function HomePage() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const sample_answers = ["구조 개혁"];
   const API_URL =
     process.env.REACT_APP_API_URL || "http://localhost:8000/generate";
   const MIN_TEXT_LENGTH = 10;
@@ -33,8 +32,8 @@ function HomePage() {
     setLoading(true)
     axios.post(API_URL, { 
       context: inputText,
-      answers: sample_answers,
-      num_to_generate: 1
+      answers: [],
+      num_to_generate: 5
     })
     .then((response) => {
       const result_doc  = response.data;
