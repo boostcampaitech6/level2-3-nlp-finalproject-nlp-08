@@ -15,18 +15,12 @@ const ResultPage = () => {
   const text = location.state.text;
   console.log("Text:", text);
 
-  const dummyquestions = ["한국은행이 답인 문제", "구조 개혁이 답인 문제", "사회적 타협이 답인 문제"];
-  const dummyanswers = ["한국은행", "구조 개혁", "사회적 타협"];
-
-  // const { questionAnswerPairs } = location.state;
+  const { questionAnswerPairs } = location.state;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // const questions = questionAnswerPairs.map((pair) => pair.question);
-  // const answers = questionAnswerPairs.map((pair) => pair.answer);
+  const questions = questionAnswerPairs.map((pair) => pair.question);
+  const answers = questionAnswerPairs.map((pair) => pair.answer);
   const [isCorrect, setIsCorrect] = useState(null);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
-  const questions = dummyquestions;
-  const answers = dummyanswers;
-  const keywords = ["한국은행", "구조 개혁", "사회적 타협", "패스트 팔로어", "골든 타임"]
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/feedback";
   console.log("Questions:", questions);
   console.log("Answers:", answers);
@@ -88,7 +82,7 @@ const ResultPage = () => {
         <h1>Reading Mate</h1>
       </header>
       <div className="mainpage-textbox-container">
-        <FixedTextBox value={text} keywords={keywords} onButtonClick={handleButtonClick}/>
+        <FixedTextBox value={text} keywords={answers} onButtonClick={handleButtonClick}/>
         <IoArrowUndoCircle
           className="back-button"
           size="70"
