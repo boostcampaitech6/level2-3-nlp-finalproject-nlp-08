@@ -12,7 +12,7 @@ def load_qg_model(tokenizer, qg_model, ke_model):
 
     ml_models['tokenizer'] = PreTrainedTokenizerFast.from_pretrained(tokenizer)
     ml_models["qg_model"] = BartForConditionalGeneration.from_pretrained(qg_model)
-    ml_models['ke_model'] = KeyBERT(BertModel.from_pretrained(ke_model))
+    ml_models['ke_model'] = KeyBERT()
 
     return ml_models
 
