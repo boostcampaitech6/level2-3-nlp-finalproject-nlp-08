@@ -4,7 +4,6 @@ from keybert import KeyBERT
 from transformers import (
     PreTrainedTokenizerFast, BertModel, BartForConditionalGeneration
 )
-from keybert import KeyBERT
 from flair.embeddings import TransformerDocumentEmbeddings
 
 ml_models = {}
