@@ -15,7 +15,7 @@ function HomePage() {
   const navigate = useNavigate();
   const API_URL =
     process.env.REACT_APP_API_URL || "http://localhost:8000/generate";
-  const MIN_TEXT_LENGTH = 10;
+  const MIN_TEXT_LENGTH = 50;
 
   const default_text = placeholder.split("예시)\n")[1]
 
@@ -25,7 +25,7 @@ function HomePage() {
       inputText = default_text
     }
     else if (inputText.length < MIN_TEXT_LENGTH) {
-      toast.error("10자 이상 입력해주세요.");
+      toast.error(MIN_TEXT_LENGTH + "자 이상 입력해주세요.");
       return;
     }
 
