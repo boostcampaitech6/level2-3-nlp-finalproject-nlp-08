@@ -16,7 +16,7 @@ from transformers import (
     AutoTokenizer
 )
 
-from dataset.QGDataset import QGDataset
+from QGDataset import QGDataset
 
 
 def eval_scores(reference, candidate):
@@ -70,16 +70,18 @@ def evaluate(reference, candidate):
         rouge2_list[i] = result['rouge-2']
         rougeL_list[i] = result['rouge-l']
 
+    result_mean = {
+        'bleu1': np.mean(bleu1_list),
+        'bleu2': np.mean(bleu2_list),
+        'bleu3': np.mean(bleu3_list),
+        'bleu4': np.mean(bleu4_list),
+        'ROUGE-1': np.mean(rouge1_list),
+        'ROUGE-2': np.mean(rouge2_list),
+        'ROUGE-L': np.mean(rougeL_list)
+    }
+    logger.info(result_mean)
 
-    logger.info(f'bleu1: {np.mean(bleu1_list)}')
-    logger.info(f'bleu2: {np.mean(bleu2_list)}')
-    logger.info(f'bleu3: {np.mean(bleu3_list)}')
-    logger.info(f'bleu4: {np.mean(bleu4_list)}')
-    logger.info(f'ROUGE-1: {np.mean(rouge1_list)}')
-    logger.info(f'ROUGE-2: {np.mean(rouge2_list)}')
-    logger.info(f'ROUGE-L: {np.mean(rougeL_list)}')
-
-    return result
+    return result_mean
 
 
 def inference(model, dataset, tokenizer, batch_size=16):
@@ -114,6 +116,7 @@ if __name__ == '__main__':
     parser.add_argument('--hf_access_token', default="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", type=str)
     parser.add_argument('--model_type', default="BART", type=str)  # ['T5', 'BART']
     parser.add_argument('--model_name', default="Sehong/kobart-QuestionGeneration", type=str) # "Sehong/t5-large-QuestionGeneration"
+    parser.add_argument('--tokenizer_name', default="Sehong/kobart-QuestionGeneration", type=str) # "Sehong/t5-large-QuestionGeneration"
     parser.add_argument('--test_dataset_name', default="2024-level3-finalproject-nlp-8/squad_kor_v1_test_reformatted", type=str)
 
     args = parser.parse_args()
@@ -131,14 +134,14 @@ if __name__ == '__main__':
     model.to(device)
 
     # load tokenizer
-    logger.info(f'load {args.model_name} tokenizer for evaluation')
-    tokenizer = PreTrainedTokenizerFast.from_pretrained(args.model_name)
+    logger.info(f'load {args.tokenizer_name} tokenizer for evaluation')
+    tokenizer = PreTrainedTokenizerFast.from_pretrained(args.tokenizer_name)
 
     # load dataset
     logger.info(f'load dataset {args.test_dataset_name} for hugging face')
     test_dataset = QGDataset(
                         dataset_name=args.test_dataset_name,
-                        tokenizer_name=args.model_name,
+                        tokenizer_name=args.tokenizer_name,
                         input_max_len = args.input_max_len,
                         train=False,
                         model_type=args.model_type,

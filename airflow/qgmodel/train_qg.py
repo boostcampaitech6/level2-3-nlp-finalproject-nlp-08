@@ -11,7 +11,7 @@ from transformers import (
     T5ForConditionalGeneration
 )
 
-from dataset.QGDataset import QGDataset
+from QGDataset import QGDataset
 
 
 def train(args):
@@ -51,8 +51,8 @@ def train(args):
 
     # TrainingArguments setup
     training_args = TrainingArguments(
-        output_dir=f'./trained_qg_models/{args.model_name}',   # output directory
-        save_total_limit=2,              # number of total save model.
+        output_dir=args.output_model_path,   # output directory
+        save_total_limit=1,              # number of total save model.
         save_steps=2,                 # model saving step.
         num_train_epochs=4,              # total number of training epochs
         learning_rate=2e-5,               # learning_rate
@@ -62,12 +62,6 @@ def train(args):
         weight_decay=0.05,               # strength of weight decay
         logging_dir='./logs',            # directory for storing logs
         logging_steps=100,              # log saving step.
-        evaluation_strategy='steps', # evaluation strategy to adopt during training
-                                    # `no`: No evaluation during training.
-                                    # `steps`: Evaluate every `eval_steps`.
-                                    # `epoch`: Evaluate every end of epoch.
-        eval_steps = 2,            # evaluation step.
-        load_best_model_at_end = True
     )
 
     trainer = Trainer(
@@ -93,6 +87,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_name', default="Sehong/kobart-QuestionGeneration", type=str) # "Sehong/t5-large-QuestionGeneration"
     parser.add_argument('--train_dataset_name', default="2024-level3-finalproject-nlp-8/squad_kor_v1_train_reformatted", type=str)
     parser.add_argument('--valid_dataset_name', default="2024-level3-finalproject-nlp-8/squad_kor_v1_test_reformatted", type=str)
+    parser.add_argument('--output_model_path', default="./qgmodel1", type=str) # "Sehong/t5-large-QuestionGeneration"
 
     args = parser.parse_args()
     

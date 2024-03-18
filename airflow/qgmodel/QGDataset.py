@@ -13,9 +13,9 @@ class QGDataset(torch.utils.data.Dataset):
         else:
             self.dataset = load_dataset(dataset_name, token=token)  
             if train == True:
-                self.dataset = self.dataset['train'].to_pandas()
+                self.dataset = self.dataset['train'].to_pandas()[:5]
             else:
-                self.dataset = self.dataset['test'].to_pandas()
+                self.dataset = self.dataset['test'].to_pandas()[:5]
 
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
         self.tokenizer.sep_token = '<unused0>'
