@@ -35,7 +35,7 @@ def generate_question(context: str, answer: Optional[str]) -> str:
     
     input_ids = [tokenizer.bos_token_id] + raw_input_ids + [tokenizer.eos_token_id]
     logger.debug(f"model input text {context} + {'<unused0>'} + {answer}")
-    summary_ids = model.generate(torch.tensor([input_ids]))
+    summary_ids = model.generate(torch.tensor([input_ids]), max_length=100, early_stopping=True)
     generated_question = tokenizer.decode(summary_ids.squeeze().tolist(), skip_special_tokens=True)
 
     return generated_question
