@@ -7,11 +7,11 @@ from transformers import (
 
 ml_models = {}
 
-def load_qg_model(tokenizer, qg_model, ke_model):
+def load_qg_model(tokenizer, qg_model, hf_token, ke_model):
     global ml_models
 
     ml_models['tokenizer'] = PreTrainedTokenizerFast.from_pretrained(tokenizer)
-    ml_models["qg_model"] = BartForConditionalGeneration.from_pretrained(qg_model)
+    ml_models['qg_model'] = BartForConditionalGeneration.from_pretrained(qg_model, token=hf_token)
     ml_models['ke_model'] = KeyBERT()
 
     return ml_models
