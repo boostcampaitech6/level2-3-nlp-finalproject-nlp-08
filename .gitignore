@@ -8,6 +8,7 @@ logs/
 __pycache__/
 
 # Virtual environment
+airflow/airflow-env/*
 venv/
 .env/
 .vscode/
