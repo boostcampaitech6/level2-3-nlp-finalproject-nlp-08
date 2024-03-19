@@ -8,13 +8,14 @@ from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from openai import OpenAI
 import pandas as pd
-
 import numpy as np
+from airflow.operators.bash import BashOperator
+from huggingface_hub import HfApi
 
 PROJECT_ROOT = "/home/song/level2-3-nlp-finalproject-nlp-08/airflow/"
-OUTPUT_PATH_TEST = os.path.join(PROJECT_ROOT, "artifacts", "user_feedback_test.csv")
-OUTPUT_PATH_TRAIN = os.path.join(PROJECT_ROOT, "artifacts", "user_feedback_train.csv")
-OUTPUT_PATH_VALID = os.path.join(PROJECT_ROOT, "artifacts", "user_feedback_valid.csv")
+OUTPUT_PATH_TEST = os.path.join(PROJECT_ROOT, "artifacts", "userfeedback_test.csv")
+OUTPUT_PATH_TRAIN = os.path.join(PROJECT_ROOT, "artifacts", "userfeedback_train.csv")
+OUTPUT_PATH_VALID = os.path.join(PROJECT_ROOT, "artifacts", "userfeedback_valid.csv")
 
 DATA_TRUE_PATH = os.path.join(PROJECT_ROOT, "artifacts", "data_true.csv")
 DATA_FALSE_PATH = os.path.join(PROJECT_ROOT, "artifacts", "data_false.csv")
@@ -37,6 +38,20 @@ database_args = {
 }
 
 COLUMNS = ['id', 'question', 'answer', 'context', 'like', 'created_at']
+
+def upload_model_to_hf():
+    api = HfApi(
+        endpoint="https://huggingface.co", # Can be a Private Hub endpoint.
+        token="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", # Token is not persisted on the machine.
+    )
+    model_path = './artifacts/model_saved'
+    repo_id = '2024-level3-finalproject-nlp-8/qg_model_airflow' 
+
+    api.upload_folder(
+        folder_path=model_path,
+        repo_id=repo_id,
+        repo_type="model"
+    )
 
 def preprocess_and_save_data(data, path):
     df = pd.DataFrame(data, columns=COLUMNS)
@@ -154,6 +169,39 @@ with DAG(
         task_id="modify_data_false_task",
         python_callable=modify_data_false,
     )
+    
+    train_qg_with_userfeedback = BashOperator(
+        task_id="train_qg",
+        bash_command='python $AIRFLOW_HOME/qgmodel/train_qg.py \
+                        --train_dataset_name=$AIRFLOW_HOME/artifacts/userfeedback_train.csv \
+                        --output_model_path=$AIRFLOW_HOME/artifacts \
+                        --valid_dataset_name=$AIRFLOW_HOME/artifacts/userfeedback_valid.csv'
 
-    check_data_task >> get_and_save_new_data_task >> modify_data_false_task
+    )
+
+    change_model_path = BashOperator(
+        task_id="change_model_path",
+        bash_command='mv $(find $AIRFLOW_HOME/artifacts -name \*checkpoint\* -type d -maxdepth 1 -print | head -n1) \
+                        $AIRFLOW_HOME/artifacts/model_saved'
+    )
+
+    test_qg_with_userfeedback = BashOperator(
+        task_id='test_qg',
+        bash_command='python $AIRFLOW_HOME/qgmodel/test_qg.py \
+                        --output_metric_path=$AIRFLOW_HOME/artifacts/after_finetuning_test_result.json \
+                        --output_path=$AIRFLOW_HOME/artifacts/after_finetuning_prediction_result.csv \
+                        --test_dataset_name=$AIRFLOW_HOME/artifacts/userfeedback_test.csv \
+                        --model_name=$AIRFLOW_HOME/artifacts/model_saved'
+    )
+
+    upload_model_to_hf_task = PythonOperator(
+        task_id="upload_model_to_hf_task",
+        python_callable=upload_model_to_hf,
+    )
+
+    check_data_task >> get_and_save_new_data_task >> modify_data_false_task >> train_qg_with_userfeedback
+    train_qg_with_userfeedback >> change_model_path
+    change_model_path >> test_qg_with_userfeedback
+    test_qg_with_userfeedback >> upload_model_to_hf_task
+    
     check_data_task >> skip_task
