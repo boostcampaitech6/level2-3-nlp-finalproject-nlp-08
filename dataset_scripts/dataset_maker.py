@@ -11,7 +11,7 @@ client = AsyncOpenAI(
   api_key= 'OpenAI에서 카드 등록을 하고 api key를 받아서 넣으시면 됩니다'
 )
 filename = 'train_dataset_01'
-n_loop = 2000 # 리스트의 각 작품마다 n_loop개씩 지문-질문 데이터를 만들어줌
+n_loop = 20 # 리스트의 각 작품마다 n_loop개씩 지문-질문 데이터를 만들어줌. 약 150개를 넘어가면 OpenAI 서버에서 분당 토큰수 제한을 초과했다고 나온다.
 title_list = ["유명 문학 작품", "한국 문학 작품", "아동 문학 작품", "장르 문학 작품", "고전 문학 작품"]
 
 async def gptapi_async(prompt):
