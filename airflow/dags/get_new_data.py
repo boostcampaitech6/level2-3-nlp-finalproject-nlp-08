@@ -9,7 +9,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from openai import OpenAI
 import pandas as pd
 
-PROJECT_ROOT = "/Users/yongrim_mac/boost_camp/level2-3-nlp-finalproject-nlp-08/airflow/"
+PROJECT_ROOT = "/home/song/level2-3-nlp-finalproject-nlp-08/airflow/"
 OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "user_feedback.csv")
 DATA_FALSE_PATH = os.path.join(PROJECT_ROOT, "artifacts", "data_false.csv")
 API_KEY = Variable.get("OPENAI API KEY")

@@ -1,9 +1,23 @@
-# airflow server
-/logs
-*.pid
-*.cfg
-*.db
-webserver_config.py
+# Local environment settings
+.env
 
-# Pycache
+# Logs
+logs/
+
+# Cache
+__pycache__/
+
+# Virtual environment
+venv/
+.env/
+.vscode/
+
+# IDE settings
+.idea/
+
+# Compiled Python files
 *.pyc
+
+# Airflow variables and connections
+airflow/variables/*/*.json
+airflow/connections/*/*.json
