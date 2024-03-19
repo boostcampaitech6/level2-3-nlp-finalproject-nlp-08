@@ -14,7 +14,7 @@ function HomePage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const API_URL =
-    process.env.REACT_APP_API_URL || "http://localhost:8000/generate";
+    process.env.REACT_APP_API_URL || "http://223.130.163.224:8000/generate";
   const MIN_TEXT_LENGTH = 50;
 
   const default_text = placeholder.split("예시)\n")[1]
