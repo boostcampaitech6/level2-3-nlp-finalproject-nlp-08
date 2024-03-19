@@ -1,0 +1,24 @@
+# Local environment settings
+.env
+
+# Logs
+logs/
+
+# Cache
+__pycache__/
+
+# Virtual environment
+airflow/airflow-env/*
+venv/
+.env/
+.vscode/
+
+# IDE settings
+.idea/
+
+# Compiled Python files
+*.pyc
+
+# Airflow variables and connections
+airflow/variables/*/*.json
+airflow/connections/*/*.json

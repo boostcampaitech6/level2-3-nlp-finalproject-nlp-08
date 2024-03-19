@@ -8,7 +8,6 @@
 
 
 .large-right-textbox {
-  background-color: rgb(245, 245, 245);
   width: 70%;
   height: 60px;
   font-size: 16px;
@@ -21,7 +20,7 @@
 
 .checking-icon {
   position: absolute;
-  right: 15%;
+  right: 6%;
   vertical-align: middle;
   margin-right: 30px;
   margin-top: 20px;

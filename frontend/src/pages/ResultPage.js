@@ -21,7 +21,7 @@ const ResultPage = () => {
   const answers = questionAnswerPairs.map((pair) => pair.answer);
   const [isCorrect, setIsCorrect] = useState(null);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/feedback";
+  const API_URL = process.env.REACT_APP_API_URL || "http://223.130.163.224:8000/feedback";
   console.log("Questions:", questions);
   console.log("Answers:", answers);
   const [submittedIssues, setSubmittedIssues] = useState(new Set());

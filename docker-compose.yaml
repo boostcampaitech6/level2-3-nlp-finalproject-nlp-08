@@ -9,6 +9,8 @@ services:
       - POSTGRES_USER=nlp8
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=nlp8db
+    ports:
+      - "5432:5432"
 
   fastapi:
     build: ./backend
