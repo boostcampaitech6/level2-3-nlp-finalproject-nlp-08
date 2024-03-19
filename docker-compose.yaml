@@ -25,5 +25,21 @@ services:
       - "3000:3000"
     stdin_open: true
 
+  airflow:
+    image: apache/airflow:2.3.3
+    command: bash -c "airflow db upgrade && airflow webserver"
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://nlp8:postgres@db:5432/nlp8db
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/airflow/dags
+      - ./airflow/logs:/airflow/logs
+      - ./airflow/plugins:/airflow/plugins
+
 volumes:
     postgres_data: 
