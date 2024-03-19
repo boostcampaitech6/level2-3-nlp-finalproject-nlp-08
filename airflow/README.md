@@ -1,13 +1,32 @@
+## Install
 ! airflow 2.8.3 -> python 3.9 버전 이하만 지원
 
-## 추가로 설치가 필요한 라이브러리
+```
+sudo apt-get install -y python3-pip python3-ven (if needed)
+cd airflow
+python3 -m venv airflow-env
+source airflow-env/bin/activate
 
-```Shell
+# install for qgmodel
+pip install -r ./qgmodel/requirements.txt
+
+# install for db connection and openai
 pip install 'apache-airflow-providers-postgres'
 pip install openai
+
+export AIRFLOW_HOME=`pwd`
+echo $AIRFLOW_HOME
+
+pip install apache-airflow==2.8.3
+airflow db init
+airflow users create --role Admin --username admin --email admin --firstname admin --lastname admin --password my-password
+
+airflow webserver -p 8080
+airflow scheduler
 ```
 
-## Connection 설정 방법
+
+## DB Connection 설정 방법
 
 1. airflow 웹 인터페이스에 접속
 2. 상단 메뉴바에서 Admin > Connections
