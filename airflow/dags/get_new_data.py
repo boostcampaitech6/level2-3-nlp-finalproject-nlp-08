@@ -9,9 +9,16 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from openai import OpenAI
 import pandas as pd
 
+import numpy as np
+
 PROJECT_ROOT = "/home/song/level2-3-nlp-finalproject-nlp-08/airflow/"
-OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "user_feedback.csv")
+OUTPUT_PATH_TEST = os.path.join(PROJECT_ROOT, "artifacts", "user_feedback_test.csv")
+OUTPUT_PATH_TRAIN = os.path.join(PROJECT_ROOT, "artifacts", "user_feedback_train.csv")
+OUTPUT_PATH_VALID = os.path.join(PROJECT_ROOT, "artifacts", "user_feedback_valid.csv")
+
+DATA_TRUE_PATH = os.path.join(PROJECT_ROOT, "artifacts", "data_true.csv")
 DATA_FALSE_PATH = os.path.join(PROJECT_ROOT, "artifacts", "data_false.csv")
+
 API_KEY = Variable.get("OPENAI API KEY")
 
 CLIENT = OpenAI(api_key=API_KEY)
@@ -83,7 +90,7 @@ def get_and_save_new_data(**kwargs):
     print(f"data_true: {data_true}")
     print(f"data_false: {data_false}")
 
-    preprocess_and_save_data(data_true, OUTPUT_PATH)
+    preprocess_and_save_data(data_true, DATA_TRUE_PATH)
     preprocess_and_save_data(data_false, DATA_FALSE_PATH)
 
 def generate_question(context, answer):
@@ -100,13 +107,24 @@ def generate_question(context, answer):
     return question
 
 def modify_data_false():
-    df = pd.read_csv(DATA_FALSE_PATH)
+    df_false = pd.read_csv(DATA_FALSE_PATH)
 
-    for idx, row in df.iterrows():
+    for idx, row in df_false.iterrows():
         question = generate_question(row["context"], row["answer"])
-        df.loc[idx, "question"] = question.strip()
+        df_false.loc[idx, "question"] = question.strip()
 
-    df.to_csv(OUTPUT_PATH, mode='a', index=False, header=False)
+    df_true = pd.read_csv(DATA_TRUE_PATH)
+    
+    df = pd.concat([df_true, df_false])
+    df = df.sample(frac=1)
+    
+    df_list = np.array_split(df, 3)
+    print("train data")
+    df_list[0].to_csv(OUTPUT_PATH_TRAIN, mode='w', index=True, header=True)
+    print("test data")
+    df_list[1].to_csv(OUTPUT_PATH_TEST, mode='w', index=True, header=True)
+    print("valid data")
+    df_list[2].to_csv(OUTPUT_PATH_VALID, mode='w', index=True, header=True)
 
 with DAG(
     dag_id='get_new_data',
