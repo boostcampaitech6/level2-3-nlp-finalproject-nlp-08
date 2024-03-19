@@ -18,8 +18,9 @@ async def lifespan(app: FastAPI):
     logger.info("load app config")
     app_config = load_config("config.yaml")
     logger.info("load model and tokenizer")
-    ml_models = load_qg_model(tokenizer=app_config['qg_model'],
-                              qg_model=app_config['qg_model'],
+    ml_models = load_qg_model(tokenizer=app_config['qg_model']["tokenizer_name"],
+                              qg_model=app_config['qg_model']["model_name"],
+                              hf_token = app_config["qg_model"]["token"],
                               ke_model=app_config['ke_model'])
     # create db connection
     logger.info(f"create db {app_config['database_uri']}")
