@@ -8,22 +8,19 @@
 
 
 .large-right-textbox {
-  background-color: rgb(245, 245, 245);
   width: 70%;
   height: 60px;
   font-size: 16px;
-  padding-left: 200px;
+  padding: 10px;
   resize: none;
   text-align: center;
-  line-height: 1;
+  line-height: 56px;
   border-radius: 20px;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
 }
 
 .checking-icon {
   position: absolute;
-  right: 15%;
+  right: 6%;
   vertical-align: middle;
   margin-right: 30px;
   margin-top: 20px;
