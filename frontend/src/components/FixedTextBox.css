@@ -1,0 +1,41 @@
+.result-container {
+  /* 본문 텍스트 박스의 위치 설정 */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100vw;
+  padding-top: 0px;
+}
+
+.result-textbox {
+  /* 본문 텍스트 박스 내 설정 */
+  width: 70%;
+  height: calc(100vh - 380px);
+  font-size: 16px;
+  padding: 15px;
+  resize: none;
+  margin-top: 20px;
+  border: 1px solid #000000;
+  border-radius: 20px;
+  text-align: left;
+  white-space: pre-line;
+  overflow-y: scroll;
+}
+
+.highlighted-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  background-color: #fff385;
+  border: none;
+  font-size: 16px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.highlighted-button:hover {
+  background-color: #fbff0d;
+}
+.highlighted-button:active {
+  background-color: #d4d400;
+}

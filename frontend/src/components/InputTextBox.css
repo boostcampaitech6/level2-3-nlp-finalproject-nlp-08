@@ -1,0 +1,17 @@
+.center-container {
+  /* 입력 텍스트 박스의 위치 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.large-input {
+  /* 입력 텍스트 박스 내 설정 */
+  width: 70%;
+  height: calc(100vh - 380px);
+  font-size: 16px;
+  padding: 15px;
+  resize: none;
+  margin-top: 20px;
+  border-radius: 20px;
+}

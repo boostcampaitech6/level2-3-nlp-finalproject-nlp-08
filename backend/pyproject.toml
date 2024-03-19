@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "nlp-08-fast-api-server"
+version = "0.1.0"
+description = ""
+authors = ["jsdysw <jsdysw@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.110.0"
+uvicorn = "^0.27.1"
+torch = "^2.2.1"
+transformers = "^4.38.1"
+loguru = "^0.7.2"
+keybert = "^0.8.4"
+numpy = "^1.26.4"
+sqlalchemy = "^2.0.28"
+python-dotenv = "^1.0.1"
+fastapi-sqlalchemy = "^0.2.1"
+pydantic-settings = "^2.2.1"
+psycopg2-binary = "^2.9.9"
+kiwipiepy = "^0.17.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

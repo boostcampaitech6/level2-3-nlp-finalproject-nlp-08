@@ -1,0 +1,7 @@
+
+database_uri : postgresql://nlp8:postgres@db:5432/nlp8db
+ke_model : roberta-base
+qg_model :
+  tokenizer_name: Sehong/kobart-QuestionGeneration
+  model_name: 2024-level3-finalproject-nlp-8/qg_model_version_1
+  token: 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
