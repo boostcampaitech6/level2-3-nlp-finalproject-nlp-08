@@ -12,11 +12,13 @@
   width: 70%;
   height: 60px;
   font-size: 16px;
-  padding: 10px;
+  padding-left: 200px;
   resize: none;
   text-align: center;
-  line-height: 56px;
+  line-height: 1;
   border-radius: 20px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .checking-icon {
