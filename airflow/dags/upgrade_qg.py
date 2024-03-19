@@ -13,7 +13,6 @@ default_args = {
     "retry_delay": timedelta(minutes=3)
 }
     
-import pandas as pd
 
 def upload_model_to_hf():
     api = HfApi(
