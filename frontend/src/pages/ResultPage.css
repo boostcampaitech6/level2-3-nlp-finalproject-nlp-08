@@ -1,0 +1,73 @@
+.result-area {
+  display: flex;
+  justify-content: center;
+  margin-bottom: auto;
+}
+
+.answer-input {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  padding: 10px;
+  resize: none;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.input {
+  margin-left: 30px;
+}
+
+.question-area {
+  display: flex;
+  justify-content: center;
+}
+
+.back-button {
+  float: right;
+  position: absolute;
+  right: calc(6vw);
+  top: calc(15vh);
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px); /* Adjust the amount of shake as needed */
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px); /* Adjust the amount of shake as needed */
+  }
+}
+
+.like-dislike-area {
+  display: flex;
+  justify-content: left;
+  margin-top: 2px;
+
+}
+
+.likeFeedbackButton {
+  display: inline-block;
+  padding: 8px 10px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  border: 1px solid #000000; 
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 15%;
+}
+
+.disLikeFeedbackButton {
+  display: inline-block;
+  padding: 8px 10px;
+  border: 1px solid #000000; 
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
