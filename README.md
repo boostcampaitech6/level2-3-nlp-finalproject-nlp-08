@@ -10,11 +10,11 @@ docker-compose up
 # 프로젝트 개요
  사용자가 읽고자 하는 문서를 입력으로 제공하면 지문에서 중요한 키워드를 추출한 후, 해당 키워드를 정답으로 하는 문제를 생성하여 독자의 읽기 활동을 도와주는 웹 서비스입니다.
 ![Screenshot 2024-03-21 at 4 27 07 PM](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/f5c45fc8-116f-43f8-8ba4-d709a81a50f7)
-<img src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/7f038ec9-9156-4da3-a20b-8e8466290643" width="500">
-<img src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/2031505c-16fd-4916-b26d-8ffae2e6ac68" width="500">
+실행화면 | airflow
+:-------------------------:|:-------------------------:
+![](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/7f038ec9-9156-4da3-a20b-8e8466290643)  |  ![](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/f4fcff8a-942d-4867-9ebd-1c41fb858059)
+![](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/2031505c-16fd-4916-b26d-8ffae2e6ac68)  |  ![](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/e2c75777-00b5-4349-8bdc-58437deba7ec)
 
-<img src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/f4fcff8a-942d-4867-9ebd-1c41fb858059" width="500">
-<img src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/e2c75777-00b5-4349-8bdc-58437deba7ec" width="500">
 
 # Models
 ### 1. 어떻게 사용자의 지문에서 의미 있는 질문을 뽑아낼 수 있을까?
