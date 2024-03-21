@@ -30,23 +30,22 @@ docker-compose up
 
 
 ### 3. 해당 키워드를 정답으로 하는 질문 문장 생성
-<img width="955" alt="Screenshot 2024-03-21 at 4 08 44 PM" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/85f7cfe3-18bd-49c3-b1e4-067f5ef6ebc0">
- 
-  사용자가 읽고자하는 지문과 앞서 keybert에서 추출한 단어를 special token으로 이어 붙여 입력을 구성했고 
+<img width="1000" alt="Untitled" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/29e823bc-fd12-4abe-97f8-56fad28c52a3">
+
+
+사용자가 읽고자하는 지문과 앞서 keybert에서 추출한 단어를 special token으로 이어 붙여 입력을 구성했고 
 모델이 출력하는 output이 정답 질문과 유사하도록 학습했습니다. 
 모델이 물어보아야하는 주제에 대해 ‘질문의 목적’이 되는 정답은 keybert에게 위임할 수 있게 되었기 때문에 BART는 문장 품질이 좋은가에만 집중하여 개선을 시도했습니다.
 
 
 # Service Architecture
+모델이 사용자의 피드백과 함께 계속해서 개선되는 파이프라인을 구축했습니다. 사용자는 질문의 품질이 맘에 들지 않는 경우 ‘싫어요' 버튼을 통해 피드백을 제공할 수 있습니다. 
+이렇게 사용자 피드백은 데이터베이스에 저장되고, airflow는 주기적으로 사용자 피드백 데이터를 수집하고 부정 피드백 데이터의 경우 올바른 질문 문장을 chatGPT로 생성합니다. 이렇게 구축한 사용자 피드백 학습데이터를 train, valid, test 데이터로 나누어 지금의 모델을 재학습하고 평가합니다. 
+학습을 마친 모델은 Hugging face 허브에 업로드되고 fastapi서버는 이곳에서 사용자 피드백이 반영된 모델을 내려받아 탑재하게 됩니다.
+
 <img width="989" alt="Screenshot 2024-03-21 at 4 10 17 PM" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/06fdfded-5936-4e2f-98f3-cc50c19b9983">
 
 <img width="995" alt="Screenshot 2024-03-21 at 4 10 39 PM" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/ba5c691f-317f-4444-9de6-2b2a6229cc90">
-
-모델이 사용자의 피드백과 함께 계속해서 개선되는 파이프라인을 구축했습니다. 사용자는 제공된 질문을 풀때 질문의 품질이 맘에 들지 않은 경우 ‘싫어요' 버튼을 통해 피드백을 제공할 수 있습니다. 
-이렇게 사용자의 의견이 반영된 피드백은 데이터베이스에 저장되고, airflow에서 주기적으로 데이터베이스를 확인해 특정 개수 이상의 데이터가 추가되면 사용자 피드백 데이터를 수집합니다. 
-그리고 그중 지문, 정답 데이터를 사용해 chatGPT 를 통해서 해당 지문과 정답에 적합한 새로운 질문을 생성합니다. 
-그렇게 구축한 사용자 피드백 학습데이터를 train, valid, test 데이터로 나누어 지금의 모델을 재학습하고 평가합니다. 
-학습을 마친 모델은 Hugging face 허브에 업로드되고 fastapi서버는 이곳에서 사용자 피드백이 반영된 모델을 내려받아 탑재하게 됩니다.
 
 <img width="827" alt="Screenshot 2024-03-21 at 4 11 19 PM" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/a895b33b-86ad-40e2-bd17-c9416569035a">
 
