@@ -7,14 +7,21 @@ docker-compose up
 - run FastAPI only : [readme](/backend/README.md)
 - run Airflow only : [readme](/airflow/README.md)
 
+<br/>
+
 # 프로젝트 개요
- 사용자가 읽고자 하는 문서를 입력으로 제공하면 지문에서 중요한 키워드를 추출한 후, 해당 키워드를 정답으로 하는 문제를 생성하여 독자의 읽기 활동을 도와주는 웹 서비스입니다.
+
+사용자가 읽고자 하는 문서를 입력으로 제공하면 지문에서 중요한 키워드를 추출한 후, 해당 키워드를 정답으로 하는 문제를 생성하여 독자의 읽기 활동을 도와주는 웹 서비스입니다.
+
+<br/><br/>
+ 
 ![Screenshot 2024-03-21 at 4 27 07 PM](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/f5c45fc8-116f-43f8-8ba4-d709a81a50f7)
 실행화면 | airflow
 :-------------------------:|:-------------------------:
 ![](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/7f038ec9-9156-4da3-a20b-8e8466290643)  |  ![](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/f4fcff8a-942d-4867-9ebd-1c41fb858059)
 ![](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/2031505c-16fd-4916-b26d-8ffae2e6ac68)  |  ![](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/e2c75777-00b5-4349-8bdc-58437deba7ec)
 
+<br/><br/>
 
 # Models
 ### 1. 어떻게 사용자의 지문에서 의미 있는 질문을 뽑아낼 수 있을까?
@@ -22,12 +29,15 @@ docker-compose up
 지문의 임베딩 벡터와 유사한 단어를 keybert가 뽑도록하고 해당 키워드를 정답으로 하는 좋은 품질의 질문 문장을 생성하도록 했습니다.
 지문, 질문, 정답으로 구성된 korquad 데이터셋을 사용했습니다.
 
+<br/><br/>
+
 ### 2. 지문에서 중요한 키워드 추출
 <img width="911" alt="Screenshot 2024-03-21 at 4 06 55 PM" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/0f98fd57-4ed1-4296-b5e8-d0711b5ae198">
   
   Keybert는 Document에서 N-gram 단어들을 추출하여 임베딩한 뒤, 문서 전체를 임베딩한 값과 코사인 유사도를 계산하는 Bert 기반 모델입니다.
 문서 전체 내용과 유사도가 높은 단어들을 Keyword로서 추출합니다. 문장의 중요 키워드들은 사용자가 문서를 잘 독해했는지 평가하는 문제의 정답으로 사용됩니다.
 
+<br/><br/>
 
 ### 3. 해당 키워드를 정답으로 하는 질문 문장 생성
 <img width="1000" alt="Untitled" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-08/assets/76895949/29e823bc-fd12-4abe-97f8-56fad28c52a3">
@@ -37,6 +47,7 @@ docker-compose up
 모델이 출력하는 output이 정답 질문과 유사하도록 학습했습니다. 
 모델이 물어보아야하는 주제에 대해 ‘질문의 목적’이 되는 정답은 keybert에게 위임할 수 있게 되었기 때문에 BART는 문장 품질이 좋은가에만 집중하여 개선을 시도했습니다.
 
+<br/><br/>
 
 # Service Architecture
 모델이 사용자의 피드백과 함께 계속해서 개선되는 파이프라인을 구축했습니다. 사용자는 질문의 품질이 맘에 들지 않는 경우 ‘싫어요' 버튼을 통해 피드백을 제공할 수 있습니다. 
