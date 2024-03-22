@@ -1,6 +1,22 @@
 import re
-from konlpy.tag import Kkma
 from kiwipiepy import Kiwi
+from sklearn.metrics.pairwise import cosine_similarity
+from flair.embeddings import TransformerDocumentEmbeddings
+from flair.data import Sentence
+
+def make_embeddings(model_name, keyword, answers_list):
+    embedding = TransformerDocumentEmbeddings(model_name)
+    keyword = Sentence(keyword)
+    embedding.embed(keyword)
+    keyword_emb = keyword.embedding.tolist()
+
+    answer_emb = []
+    for answer in answers_list:
+        answer = Sentence(answer)
+        embedding.embed(answer)
+        answer_emb.append(answer.embedding.tolist())
+
+    return [keyword_emb], answer_emb
 
 def preprocessing_data(context):
     '''
@@ -23,3 +39,7 @@ def extracts_nouns(keyword):
     if len(final_keyword) != 0:
         return ' '.join(final_keyword)
 
+def get_cosine_similarity(model_name, keyword, answers_list):
+    keyword_emb, answers_embs = make_embeddings(model_name, keyword, answers_list)
+    cosine_list = cosine_similarity(keyword_emb, answers_embs)
+    return cosine_list.max()
