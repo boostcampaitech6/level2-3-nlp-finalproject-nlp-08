@@ -4,16 +4,16 @@ from collections import defaultdict
 from tqdm import tqdm
 import argparse
 import os
-import torch
+
+from kiwipiepy import Kiwi
+from flair.embeddings import TransformerDocumentEmbeddings
+from sentence_transformers import SentenceTransformer
 
 from utils import preprocessing_data, extracts_nouns, get_cosine_similarity
 from keybert_model import KeywordExtraction
-from flair.embeddings import TransformerDocumentEmbeddings
-import flair
 
 if __name__:
-    print(flair.device)
-
+    
     # koquard 데이터 불러오기
     DATA_DIR = '../../data/squad_kor_v1_test_reformatted.csv'
     train_df = pd.read_csv(DATA_DIR)
@@ -41,11 +41,12 @@ if __name__:
     answer_df = pd.DataFrame(list(final_dict.items()), columns = ['id', 'answer'])
     
     # id, context, answer
-    data_df = pd.merge(docs_df, answer_df, on='id')
+    data_df = pd.merge(docs_df, answer_df, on='id')[:3]
 
     # KeyBERT options
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_name', required=False, default='roberta-base', help='모델 이름')
+    parser.add_argument('--model_type', required=True, choices=['sentence_transformer', 'flair'], help='모델 타입')
+    parser.add_argument('--model_name', required=False, default='paraphrase-multilingual-MiniLM-L12-v2', help='모델 이름')
     parser.add_argument('--num_to_gen', required=False, type=int, default=5, help='생성할 keyword 수')
     parser.add_argument('--use_maxsum', required=True, default = True, help='다양성 방법1')
     parser.add_argument('--nr_candidates',required=False, default=3, type=int, help='use_maxsum=True일 경우 고려할 대상 개수')
@@ -53,9 +54,14 @@ if __name__:
     parser.add_argument('--diversity', required=False, type=float, default=0.1, help='use_mmr=True할 경우 다양성을 얼마나 줄건지(숫자 클수록 다양성 커짐)')
     args = parser.parse_args()
     
-    # kw_model = KeyBERT()
-    roberta = TransformerDocumentEmbeddings(args.model_name)
-    kw_model = KeyBERT(model=roberta)
+    if args.model_type == 'sentence_transformer':
+        print('--- sentence transformer ---')
+        emb_model = SentenceTransformer(args.model_name)
+        kw_model = KeyBERT(model=emb_model)
+    elif args.model_type=='flair':
+        print('--- flair ---')
+        emb_model = TransformerDocumentEmbeddings(args.model_name)
+        kw_model = KeyBERT(model=emb_model)
 
     keywords_object = KeywordExtraction(kw_model, 
                                         num_to_gen = args.num_to_gen, 
@@ -67,11 +73,12 @@ if __name__:
     
     # 키워드 추출
     new_data = []
-    for _, data in tqdm(data_df[:3].iterrows(), desc='keyword extraction', total = len(data_df)):
+    kiwi_model = Kiwi()
+    for _, data in tqdm(data_df.iterrows(), desc='keyword extraction', total = len(data_df)):
         id = data['id']
         context = data['context']
         keywords_candidates = keywords_object.generate_keywords(context, 1)
-        keywords_candidates = [extracts_nouns(i) for i in keywords_candidates if (len(extracts_nouns(i))>0) and (extracts_nouns(i) in context)]
+        keywords_candidates = [extracts_nouns(kiwi_model, i) for i in keywords_candidates if (len(extracts_nouns(kiwi_model, i))>0) and (extracts_nouns(kiwi_model, i) in context)]
         new_data.append([id, context, list(set(keywords_candidates))])
     keyword_df = pd.DataFrame(new_data, columns=['id', 'context', 'keyword'])
     
@@ -82,14 +89,14 @@ if __name__:
     total_keyword = sum(len(answer_keyword_df.iloc[i]['keyword']) for i in range(len(answer_keyword_df)))
 
     total_cs_score = 0
-    score = 0   # 점수 계산
+    score = 0
 
     cs_limit = 0.7
     for _, data in tqdm(answer_keyword_df.iterrows(), desc='점수 계산', total=len(answer_keyword_df)):
         id = data['id']
         answer_list = data['answer']
         for keyword in data['keyword']:
-            cs_score = get_cosine_similarity(args.model_name, keyword, answer_list)
+            cs_score = get_cosine_similarity(emb_model, args.model_type, args.model_name, keyword, answer_list)
             total_cs_score += cs_score
             if cs_limit <= cs_score:
                 score += 1

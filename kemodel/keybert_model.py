@@ -9,6 +9,15 @@ class KeywordExtraction():
         self.diversity = diversity
         
     def generate_keywords(self, context, n_gram):
+        """ Generate keywords
+
+        Args:
+            context (string): Context to extract keywords
+            n_gram (int): Number of adjacent characters
+
+        Returns:
+            keywords (list): extracted keywords
+        """
         if self.use_maxsum == 'False' and self.use_mmr == 'False':
             keywords_candidates = self.kw_model.extract_keywords(context, 
                                         keyphrase_ngram_range=(1, n_gram), 
