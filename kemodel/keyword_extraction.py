@@ -41,7 +41,7 @@ if __name__:
     answer_df = pd.DataFrame(list(final_dict.items()), columns = ['id', 'answer'])
     
     # id, context, answer
-    data_df = pd.merge(docs_df, answer_df, on='id')[:3]
+    data_df = pd.merge(docs_df, answer_df, on='id')
 
     # KeyBERT options
     parser = argparse.ArgumentParser()
