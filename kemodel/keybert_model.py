@@ -1,5 +1,3 @@
-from keybert import KeyBERT
-
 class KeywordExtraction():
     def __init__(self, kw_model, num_to_gen, stop_words, use_maxsum, nr_candidates, use_mmr, diversity):
         self.kw_model = kw_model
