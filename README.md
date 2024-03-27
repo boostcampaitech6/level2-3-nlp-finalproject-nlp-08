@@ -1,3 +1,7 @@
+# 프로젝트 영상
+📚 [Reading Mate](https://youtu.be/R7w4PVJ4mKs)
+<br/><br/>
+
 # How to run
 
 ```
