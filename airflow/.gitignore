@@ -1,0 +1,6 @@
+# artifacts 폴더 안의 모든 내용 ignore
+artifacts/*
+*.cfg
+*.db
+artifacts/*.csv
+webserver_config.py
