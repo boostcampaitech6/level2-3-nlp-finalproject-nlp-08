@@ -7,12 +7,11 @@ from transformers import (
     set_seed, 
     Trainer,
     BartForConditionalGeneration, 
-    TrainingArguments,  
-    T5ForConditionalGeneration
+    TrainingArguments
 )
 
 from dataset.QGDataset import QGDataset
-
+from model import QuantizedBART
 
 def train(args):
     set_seed(args.seed)
@@ -39,10 +38,12 @@ def train(args):
                         token = args.hf_access_token,
                     )
     
-    if args.model_type == "BART":
-        qg_model = BartForConditionalGeneration.from_pretrained(args.model_name)
-    elif args.model_type == "T5":
-        qg_model = T5ForConditionalGeneration.from_pretrained(args.model_name)
+    
+    qg_model = QuantizedBART.from_pretrained(args.model_name)
+    qg_model.qconfig = torch.quantization.get_default_qconfig('fbgemm')
+    qg_model.train()
+    qg_model = torch.quantization.prepare_qat(qg_model, inplace=True)
+
     
 
     qg_model.to(device)
@@ -53,8 +54,8 @@ def train(args):
     training_args = TrainingArguments(
         output_dir=f'./trained_qg_models/{args.model_name}',   # output directory
         save_total_limit=2,              # number of total save model.
-        save_steps=2,                 # model saving step.
-        num_train_epochs=4,              # total number of training epochs
+        save_steps=200,                 # model saving step.
+        num_train_epochs=1,              # total number of training epochs
         learning_rate=2e-5,               # learning_rate
         per_device_train_batch_size=args.batch_size,  # batch size per device during training
         per_device_eval_batch_size=args.batch_size,   # batch size for evaluation
@@ -66,7 +67,7 @@ def train(args):
                                     # `no`: No evaluation during training.
                                     # `steps`: Evaluate every `eval_steps`.
                                     # `epoch`: Evaluate every end of epoch.
-        eval_steps = 2,            # evaluation step.
+        eval_steps = 200,            # evaluation step.
         load_best_model_at_end = True
     )
 
@@ -81,12 +82,20 @@ def train(args):
     logger.info(f"start training question generation model")
     trainer.train()
     
+    # 실제 양자화 모델로 변환
+    qg_model.eval()
+    qg_model = torch.quantization.convert(qg_model.eval(), inplace=True)
+    logger.info(f"finish training question generation model")
+    
+    # 최종 양자화 모델 저장
+    qg_model.save_pretrained(f'./trained_qg_models/{args.model_name}_quantized')
+    
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--seed', default=8, type=int)
-    parser.add_argument('--batch_size', default=2, type=int)
+    parser.add_argument('--batch_size', default=40, type=int)
     parser.add_argument('--input_max_len', default=512, type=int)
     parser.add_argument('--hf_access_token', default="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", type=str)
     parser.add_argument('--model_type', default="BART", type=str)  # ['T5', 'BART']
